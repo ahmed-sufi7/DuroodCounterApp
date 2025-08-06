@@ -9,6 +9,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../constants/Colors';
@@ -97,9 +98,17 @@ export function DuroodCounter() {
 
   if (isLoading) {
     return (
-      <View style={styles.container}>
+        <View style={styles.container}>
         <IslamicPattern />
-        <StatusBar barStyle="light-content" backgroundColor={Colors.primary.darkTeal} />
+        <StatusBar 
+          barStyle="light-content" 
+          backgroundColor={Colors.primary.darkTeal}
+          translucent={false}
+          {...(Platform.OS === 'android' && {
+            navigationBarColor: Colors.primary.darkTeal,
+            navigationBarStyle: 'light-content',
+          })}
+        />
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.loadingContainer}>
             <View style={styles.loadingCard}>
@@ -116,7 +125,15 @@ export function DuroodCounter() {
   return (
     <View style={styles.container}>
       <IslamicPattern />
-      <StatusBar barStyle="light-content" backgroundColor={Colors.primary.darkTeal} />
+      <StatusBar 
+        barStyle="light-content" 
+        backgroundColor={Colors.primary.darkTeal}
+        translucent={false}
+        {...(Platform.OS === 'android' && {
+          navigationBarColor: Colors.primary.darkTeal,
+          navigationBarStyle: 'light-content',
+        })}
+      />
       <SafeAreaView style={styles.safeArea}>
         {/* App Header */}
         <View style={styles.appHeader}>
@@ -555,7 +572,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.neutral.lightGray,
     marginHorizontal: 16,
     marginTop: 16,
-    marginBottom: 20,
     borderRadius: 24,
   },
   arabicContainer: {
