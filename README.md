@@ -1,50 +1,144 @@
-# Welcome to your Expo app 👋
+# Durood Counter App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native mobile application built with Expo for counting Durood recitations with a collective goal of 15 crore (150 million) before Milad un Nabi 2025.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **Real-time Counter**: Large tally counter button for incrementing durood count
+- **Global Progress**: Display current global count from all users
+- **Personal Tracking**: Track your personal durood count locally
+- **Bulk Upload**: Manual input field to add bulk durood counts
+- **Progress Bar**: Visual progress towards the 15 crore target
+- **Countdown Timer**: Time remaining until Milad un Nabi 2025
+- **Real-time Updates**: Global counter updates in real-time when any user increments
 
-   ```bash
-   npm install
-   ```
+## Setup Instructions
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+### 1. Install Dependencies
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 2. Firebase Configuration
 
-## Learn more
+1. Create a Firebase project at [Firebase Console](https://console.firebase.google.com/)
+2. Enable Realtime Database
+3. Update the Firebase configuration in `config/firebase.ts`:
 
-To learn more about developing your project with Expo, look at the following resources:
+```typescript
+const firebaseConfig = {
+  apiKey: "your-api-key",
+  authDomain: "your-auth-domain",
+  databaseURL: "your-database-url",
+  projectId: "your-project-id",
+  storageBucket: "your-storage-bucket",
+  messagingSenderId: "your-messaging-sender-id",
+  appId: "your-app-id",
+};
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+### 3. Database Rules
 
-## Join the community
+Set up your Firebase Realtime Database rules:
 
-Join our community of developers creating universal apps.
+```json
+{
+  "rules": {
+    "globalCount": {
+      ".read": true,
+      ".write": true
+    },
+    "lastUpdated": {
+      ".read": true,
+      ".write": true
+    }
+  }
+}
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### 4. Run the App
+
+```bash
+# Start the development server
+npm start
+
+# Run on iOS
+npm run ios
+
+# Run on Android
+npm run android
+
+# Run on web
+npm run web
+```
+
+## Technical Stack
+
+- **Framework**: React Native with Expo
+- **Database**: Firebase Realtime Database
+- **Local Storage**: AsyncStorage
+- **State Management**: React hooks (useState, useEffect, useCallback)
+- **Navigation**: Expo Router
+
+## Project Structure
+
+```
+├── app/
+│   └── (tabs)/
+│       ├── _layout.tsx          # Tab navigation layout
+│       └── index.tsx            # Main counter screen
+├── components/
+│   └── DuroodCounter.tsx        # Main counter component
+├── config/
+│   └── firebase.ts              # Firebase configuration
+├── hooks/
+│   ├── useDuroodCounter.ts      # Counter logic hook
+│   └── useCountdown.ts          # Countdown timer hook
+├── services/
+│   ├── firebaseService.ts       # Firebase operations
+│   └── storageService.ts        # Local storage operations
+└── utils/
+    └── helpers.ts               # Utility functions
+```
+
+## Features in Detail
+
+### Main Counter Screen
+
+- Large, easily tappable counter button
+- Real-time global count display
+- Personal count tracking
+- Progress bar showing percentage towards target
+- Countdown timer to Milad un Nabi 2025
+
+### Manual Upload Feature
+
+- Input field to manually add bulk durood count
+- Confirmation dialog for large numbers (>10,000)
+- Validation for valid numeric input
+
+### Real-time Updates
+
+- Global counter updates instantly when any user increments
+- Local counter persists even when offline
+- Automatic sync when connection is restored
+
+### Data Storage
+
+- No authentication required (anonymous users)
+- Personal count stored locally using AsyncStorage
+- Global count stored in Firebase Realtime Database
+- Each increment/upload updates both local and global counters
+
+## Target Goal
+
+The app aims to reach **15 crore (150 million)** Durood recitations before Milad un Nabi 2025. The progress is tracked globally across all users in real-time.
+
+## Contributing
+
+This is a simple, focused app designed to help Muslims track their Durood recitations collectively. The app is intentionally kept simple without complex features like user authentication, leaderboards, or social features to maintain focus on the core purpose.
+
+## License
+
+This project is open source and available under the MIT License.

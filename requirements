@@ -43,16 +43,7 @@ React Native mobile app using Expo for counting Durood recitations with a collec
 
 ## UI Requirements
 
-- Simple, clean Islamic-themed design
-- Large, easily tappable counter button
-- Clear display of numbers with proper formatting (commas/localization)
-- Green/gold color scheme
-- Arabic/Islamic typography if possible
-
-## Key Screens
-
-1. **Main Screen**: Counter + Global stats + Manual upload
-2. **That's it** - keep it single screen focused
+Follow the design reference in the designreference.json file.
 
 ## Data Structure
 
@@ -73,11 +64,3 @@ Local Storage:
 - Real-time global counter
 - Local persistence
 - Amazing UI
-
-## What NOT to include (keep simple)
-
-- User profiles/auth
-- Leaderboards
-- Push notifications
-- Complex animations
-- Social features
