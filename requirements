@@ -1,0 +1,83 @@
+# Durood Counter App Requirements
+
+## Overview
+
+React Native mobile app using Expo for counting Durood recitations with a collective goal of 15 crore (150 million) before Milad un Nabi 2025.
+
+## Core Features
+
+### 1. Main Counter Screen
+
+- Large tally counter button for incrementing durood count
+- Display current user's personal count
+- Display global/total count from all users
+- Target display: 15,00,00,000 (15 crore)
+- Progress bar showing percentage completed toward target
+- Countdown timer to Milad un Nabi 2025
+
+### 2. Manual Upload Feature
+
+- Input field to manually add bulk durood count
+- "Add Count" button to submit the manual entry
+- Confirmation dialog before adding large numbers
+
+### 3. Real-time Updates
+
+- Global counter updates in real-time when any user increments
+- Use Firebase Realtime Database or Firestore for live sync
+- Local counter persists even when offline
+
+### 4. Data Storage
+
+- No authentication required (anonymous users)
+- Store user's personal count locally (AsyncStorage)
+- Store global count in Firebase
+- Each increment/upload updates both local and global counters
+
+## Technical Stack
+
+- **Framework**: React Native with Expo
+- **Database**: Firebase (Realtime Database or Firestore)
+- **Local Storage**: AsyncStorage for personal counts
+- **State Management**: React useState/useEffect (keep it simple)
+
+## UI Requirements
+
+- Simple, clean Islamic-themed design
+- Large, easily tappable counter button
+- Clear display of numbers with proper formatting (commas/localization)
+- Green/gold color scheme
+- Arabic/Islamic typography if possible
+
+## Key Screens
+
+1. **Main Screen**: Counter + Global stats + Manual upload
+2. **That's it** - keep it single screen focused
+
+## Data Structure
+
+```
+Firebase:
+- globalCount: number
+- lastUpdated: timestamp
+
+Local Storage:
+- personalCount: number
+- lastSynced: timestamp
+```
+
+## MVP Features Only
+
+- Tally counter button
+- Manual count upload
+- Real-time global counter
+- Local persistence
+- Amazing UI
+
+## What NOT to include (keep simple)
+
+- User profiles/auth
+- Leaderboards
+- Push notifications
+- Complex animations
+- Social features
