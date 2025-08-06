@@ -1,26 +1,48 @@
 /**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
+ * Islamic App Design System Colors
+ * Based on the modern Islamic design with earth tones and gold accents
  */
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
-
 export const Colors = {
+  primary: {
+    darkTeal: '#2D4A4A',
+    mediumTeal: '#3E5A5A', 
+    lightTeal: '#4A6B6B',
+    accent: '#5C7A7A'
+  },
+  secondary: {
+    warmGold: '#D4A574',
+    brightGold: '#F5C842',
+    lightGold: '#FFD700'
+  },
+  neutral: {
+    white: '#FFFFFF',
+    lightGray: '#F5F5F5',
+    mediumGray: '#CCCCCC',
+    darkGray: '#666666',
+    black: '#000000'
+  },
+  functional: {
+    success: '#4CAF50',
+    warning: '#FF9800',
+    error: '#F44336',
+    info: '#2196F3'
+  },
+  // Legacy support for existing theme system
   light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
+    text: '#2D4A4A',
+    background: '#F5F5F5',
+    tint: '#2D4A4A',
+    icon: '#666666',
+    tabIconDefault: '#CCCCCC',
+    tabIconSelected: '#2D4A4A',
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
+    text: '#FFFFFF',
+    background: '#2D4A4A',
+    tint: '#D4A574',
+    icon: '#CCCCCC',
+    tabIconDefault: '#CCCCCC',
+    tabIconSelected: '#D4A574',
   },
 };

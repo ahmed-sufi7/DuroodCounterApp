@@ -1,460 +1,298 @@
 {
-    "designSystem": {
-      "name": "Productivity App Design System",
-      "version": "1.0.0",
-      "description": "Design system extracted from productivity app screenshots featuring task management and scheduling interfaces",
-      
-      "colors": {
-        "primary": {
-          "purple": {
-            "50": "#f3f0ff",
-            "100": "#e9e5ff",
-            "500": "#6366f1",
-            "600": "#5b21b6",
-            "700": "#4c1d95",
-            "800": "#3730a3",
-            "gradient": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
-          },
-          "blue": {
-            "400": "#60a5fa",
-            "500": "#3b82f6",
-            "600": "#2563eb",
-            "gradient": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
-          }
-        },
-        "secondary": {
-          "pink": {
-            "100": "#fce7f3",
-            "200": "#fbcfe8",
-            "400": "#f472b6",
-            "500": "#ec4899"
-          },
-          "orange": {
-            "100": "#fed7aa",
-            "200": "#fdba74",
-            "400": "#fb923c",
-            "500": "#f97316"
-          },
-          "green": {
-            "100": "#dcfce7",
-            "200": "#bbf7d0",
-            "400": "#4ade80",
-            "500": "#22c55e"
-          }
-        },
-        "neutral": {
-          "white": "#ffffff",
-          "gray": {
-            "50": "#f9fafb",
-            "100": "#f3f4f6",
-            "200": "#e5e7eb",
-            "300": "#d1d5db",
-            "400": "#9ca3af",
-            "500": "#6b7280",
-            "600": "#4b5563",
-            "700": "#374151",
-            "800": "#1f2937",
-            "900": "#111827"
-          }
-        },
-        "status": {
-          "success": "#22c55e",
-          "warning": "#f59e0b",
-          "error": "#ef4444",
-          "info": "#3b82f6"
-        },
-        "background": {
-          "primary": "#f8fafc",
-          "secondary": "#ffffff",
-          "tertiary": "#f1f5f9"
-        }
+  "designSystem": {
+    "name": "Islamic App Design System",
+    "version": "1.0",
+    "theme": "modern_islamic",
+    "description": "Design system for Islamic mobile applications with modern UI patterns and traditional aesthetic elements"
+  },
+  "colorPalette": {
+    "primary": {
+      "darkTeal": "#2D4A4A",
+      "mediumTeal": "#3E5A5A", 
+      "lightTeal": "#4A6B6B",
+      "accent": "#5C7A7A"
+    },
+    "secondary": {
+      "warmGold": "#D4A574",
+      "brightGold": "#F5C842",
+      "lightGold": "#FFD700"
+    },
+    "neutral": {
+      "white": "#FFFFFF",
+      "lightGray": "#F5F5F5",
+      "mediumGray": "#CCCCCC",
+      "darkGray": "#666666",
+      "black": "#000000"
+    },
+    "functional": {
+      "success": "#4CAF50",
+      "warning": "#FF9800",
+      "error": "#F44336",
+      "info": "#2196F3"
+    }
+  },
+  "typography": {
+    "arabic": {
+      "fontFamily": "Traditional Arabic",
+      "weights": ["regular", "medium", "bold"],
+      "sizes": {
+        "display": "48px",
+        "heading": "32px", 
+        "subheading": "24px",
+        "body": "18px",
+        "caption": "14px"
+      }
+    },
+    "latin": {
+      "fontFamily": "Modern Sans-Serif",
+      "weights": ["regular", "medium", "semibold", "bold"],
+      "sizes": {
+        "display": "32px",
+        "heading": "24px",
+        "subheading": "18px", 
+        "body": "16px",
+        "caption": "12px",
+        "small": "10px"
+      }
+    }
+  },
+  "layoutStructure": {
+    "containerTypes": {
+      "fullscreen": {
+        "padding": "0px",
+        "backgroundColor": "primary.darkTeal"
       },
-  
-      "typography": {
-        "fontFamily": {
-          "primary": "-apple-system, poppins, 'Segoe UI', Roboto, sans-serif",
-          "secondary": "Inter, -apple-system, BlinkMacSystemFont, sans-serif"
-        },
-        "fontSize": {
-          "xs": "0.75rem",
-          "sm": "0.875rem",
-          "base": "1rem",
-          "lg": "1.125rem",
-          "xl": "1.25rem",
-          "2xl": "1.5rem",
-          "3xl": "1.875rem",
-          "4xl": "2.25rem"
-        },
-        "fontWeight": {
-          "normal": "400",
-          "medium": "500",
-          "semibold": "600",
-          "bold": "700"
-        },
-        "lineHeight": {
-          "tight": "1.25",
-          "normal": "1.5",
-          "relaxed": "1.75"
-        }
+      "card": {
+        "borderRadius": "16px",
+        "padding": "20px",
+        "backgroundColor": "neutral.white",
+        "shadow": "0 4px 12px rgba(0,0,0,0.1)"
       },
-  
-      "spacing": {
-        "xs": "0.25rem",
-        "sm": "0.5rem",
-        "md": "1rem",
-        "lg": "1.5rem",
-        "xl": "2rem",
-        "2xl": "3rem",
-        "3xl": "4rem"
-      },
-  
-      "borderRadius": {
-        "sm": "0.375rem",
-        "md": "0.5rem",
-        "lg": "0.75rem",
-        "xl": "1rem",
-        "2xl": "1.5rem",
-        "full": "9999px"
-      },
-  
-      "shadows": {
-        "sm": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-        "md": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-        "lg": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-        "xl": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-        "inner": "inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)"
-      },
-  
-      "components": {
-        "buttons": {
-          "primary": {
-            "backgroundColor": "#6366f1",
-            "color": "#ffffff",
-            "padding": "0.75rem 1.5rem",
-            "borderRadius": "0.75rem",
-            "fontSize": "0.875rem",
-            "fontWeight": "600",
-            "boxShadow": "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-            "hover": {
-              "backgroundColor": "#5b21b6",
-              "transform": "translateY(-1px)"
-            }
-          },
-          "secondary": {
-            "backgroundColor": "#ffffff",
-            "color": "#374151",
-            "border": "1px solid #d1d5db",
-            "padding": "0.75rem 1.5rem",
-            "borderRadius": "0.75rem",
-            "fontSize": "0.875rem",
-            "fontWeight": "500",
-            "hover": {
-              "backgroundColor": "#f9fafb"
-            }
-          },
-          "fab": {
-            "backgroundColor": "#6366f1",
-            "color": "#ffffff",
-            "width": "3.5rem",
-            "height": "3.5rem",
-            "borderRadius": "50%",
-            "boxShadow": "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-            "position": "fixed",
-            "bottom": "1.5rem",
-            "right": "1.5rem"
-          }
+      "section": {
+        "borderRadius": "12px",
+        "padding": "16px",
+        "margin": "8px"
+      }
+    },
+    "gridSystem": {
+      "columns": 12,
+      "gutters": "16px",
+      "margins": "20px"
+    }
+  },
+  "componentPatterns": {
+    "header": {
+      "structure": "greeting + notification_icon",
+      "backgroundColor": "primary.darkTeal",
+      "textColor": "neutral.white",
+      "padding": "16px 20px",
+      "elements": {
+        "greeting": {
+          "fontSize": "typography.latin.sizes.subheading",
+          "fontWeight": "medium"
         },
-  
-        "cards": {
-          "primary": {
-            "backgroundColor": "#ffffff",
-            "borderRadius": "1rem",
-            "padding": "1.5rem",
-            "boxShadow": "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-            "border": "1px solid #f3f4f6"
-          },
-          "featured": {
-            "background": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-            "color": "#ffffff",
-            "borderRadius": "1.5rem",
-            "padding": "2rem",
-            "boxShadow": "0 10px 15px -3px rgba(0, 0, 0, 0.1)"
-          },
-          "task": {
-            "backgroundColor": "#ffffff",
-            "borderRadius": "0.75rem",
-            "padding": "1rem 1.25rem",
-            "border": "1px solid #e5e7eb",
-            "marginBottom": "0.5rem",
-            "hover": {
-              "boxShadow": "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
-            }
-          }
-        },
-  
-        "progressIndicators": {
-          "circular": {
-            "size": "4rem",
-            "strokeWidth": "0.375rem",
-            "backgroundColor": "rgba(255, 255, 255, 0.2)",
-            "foregroundColor": "#ffffff"
-          },
-          "linear": {
-            "height": "0.375rem",
-            "backgroundColor": "#e5e7eb",
-            "foregroundColor": "#3b82f6",
-            "borderRadius": "9999px"
-          }
-        },
-  
-        "avatars": {
-          "small": {
-            "width": "2rem",
-            "height": "2rem",
-            "borderRadius": "50%",
-            "border": "2px solid #ffffff"
-          },
-          "medium": {
-            "width": "3rem",
-            "height": "3rem",
-            "borderRadius": "50%",
-            "border": "2px solid #ffffff"
-          }
-        },
-  
-        "badges": {
-          "status": {
-            "padding": "0.25rem 0.75rem",
-            "borderRadius": "9999px",
-            "fontSize": "0.75rem",
-            "fontWeight": "500",
-            "variants": {
-              "done": {
-                "backgroundColor": "#dcfce7",
-                "color": "#166534"
-              },
-              "inProgress": {
-                "backgroundColor": "#fef3c7",
-                "color": "#92400e"
-              },
-              "todo": {
-                "backgroundColor": "#dbeafe",
-                "color": "#1e40af"
-              }
-            }
-          },
-          "count": {
-            "backgroundColor": "#6366f1",
-            "color": "#ffffff",
-            "padding": "0.125rem 0.375rem",
-            "borderRadius": "9999px",
-            "fontSize": "0.75rem",
-            "fontWeight": "600",
-            "minWidth": "1.25rem",
-            "textAlign": "center"
-          }
-        },
-  
-        "navigation": {
-          "tabBar": {
-            "backgroundColor": "#ffffff",
-            "borderTop": "1px solid #e5e7eb",
-            "padding": "0.75rem 0",
-            "items": {
-              "padding": "0.5rem 1rem",
-              "borderRadius": "0.75rem",
-              "active": {
-                "backgroundColor": "#6366f1",
-                "color": "#ffffff"
-              },
-              "inactive": {
-                "color": "#6b7280"
-              }
-            }
-          },
-          "bottomNavigation": {
-            "backgroundColor": "#ffffff",
-            "borderTop": "1px solid #e5e7eb",
-            "padding": "0.75rem 0",
-            "boxShadow": "0 -4px 6px -1px rgba(0, 0, 0, 0.1)"
-          }
-        }
-      },
-  
-      "layouts": {
-        "mobile": {
-          "container": {
-            "maxWidth": "100%",
-            "padding": "1rem",
-            "backgroundColor": "#f8fafc"
-          },
-          "header": {
-            "padding": "1rem 1.5rem",
-            "backgroundColor": "#ffffff",
-            "borderBottom": "1px solid #e5e7eb"
-          },
-          "content": {
-            "padding": "1rem",
-            "minHeight": "calc(100vh - 8rem)"
-          }
-        },
-        "desktop": {
-          "container": {
-            "maxWidth": "1200px",
-            "margin": "0 auto",
-            "padding": "2rem"
-          },
-          "sidebar": {
-            "width": "16rem",
-            "backgroundColor": "#ffffff",
-            "borderRight": "1px solid #e5e7eb"
-          }
-        }
-      },
-  
-      "patterns": {
-        "taskCard": {
-          "structure": {
-            "container": "card.primary",
-            "header": {
-              "display": "flex",
-              "justifyContent": "space-between",
-              "alignItems": "center",
-              "marginBottom": "0.75rem"
-            },
-            "title": {
-              "fontSize": "1rem",
-              "fontWeight": "600",
-              "color": "#1f2937"
-            },
-            "subtitle": {
-              "fontSize": "0.875rem",
-              "color": "#6b7280",
-              "marginTop": "0.25rem"
-            },
-            "progress": "progressIndicators.linear",
-            "badge": "badges.status"
-          }
-        },
-  
-        "statsCard": {
-          "structure": {
-            "container": "card.primary",
-            "value": {
-              "fontSize": "2.25rem",
-              "fontWeight": "700",
-              "color": "#1f2937"
-            },
-            "label": {
-              "fontSize": "0.875rem",
-              "color": "#6b7280",
-              "marginTop": "0.25rem"
-            },
-            "percentage": {
-              "fontSize": "0.875rem",
-              "fontWeight": "600",
-              "color": "#059669"
-            }
-          }
-        },
-  
-        "userGreeting": {
-          "structure": {
-            "container": {
-              "display": "flex",
-              "alignItems": "center",
-              "gap": "0.75rem"
-            },
-            "avatar": "avatars.medium",
-            "text": {
-              "fontSize": "1.125rem",
-              "fontWeight": "600",
-              "color": "#1f2937"
-            }
-          }
-        },
-  
-        "calendarView": {
-          "structure": {
-            "grid": {
-              "display": "grid",
-              "gridTemplateColumns": "repeat(7, 1fr)",
-              "gap": "0.25rem"
-            },
-            "cell": {
-              "padding": "0.5rem",
-              "textAlign": "center",
-              "borderRadius": "0.375rem",
-              "active": {
-                "backgroundColor": "#6366f1",
-                "color": "#ffffff"
-              },
-              "today": {
-                "backgroundColor": "#dbeafe",
-                "color": "#1e40af"
-              },
-              "hasTask": {
-                "backgroundColor": "#dcfce7",
-                "color": "#166534"
-              }
-            }
-          }
-        }
-      },
-  
-      "animations": {
-        "transitions": {
-          "default": "all 0.2s ease-in-out",
-          "slow": "all 0.3s ease-in-out",
-          "bounce": "all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55)"
-        },
-        "hover": {
-          "lift": "translateY(-2px)",
-          "scale": "scale(1.02)"
-        }
-      },
-  
-      "breakpoints": {
-        "sm": "640px",
-        "md": "768px",
-        "lg": "1024px",
-        "xl": "1280px",
-        "2xl": "1536px"
-      },
-  
-      "accessibility": {
-        "focusRing": {
-          "outline": "2px solid #6366f1",
-          "outlineOffset": "2px"
-        },
-        "contrast": {
-          "minimumRatio": "4.5:1",
-          "preferredRatio": "7:1"
+        "notification": {
+          "position": "top-right",
+          "iconSize": "24px"
         }
       }
     },
-  
-    "implementationGuidelines": {
-      "principles": [
-        "Use consistent spacing based on the 8px grid system",
-        "Maintain visual hierarchy through typography scales",
-        "Apply subtle shadows and rounded corners for modern feel",
-        "Use color semantically to communicate status and importance",
-        "Ensure interactive elements have clear hover and focus states",
-        "Implement smooth transitions for better user experience"
-      ],
-      
-      "componentUsage": {
-        "cards": "Use for grouping related content, apply appropriate shadows based on hierarchy",
-        "buttons": "Primary for main actions, secondary for supporting actions, FAB for quick access",
-        "colors": "Purple gradient for featured content, neutral grays for text, colored badges for status",
-        "typography": "Establish clear hierarchy with size and weight, use consistent line heights"
-      },
-  
-      "responsiveDesign": {
-        "mobile": "Stack components vertically, increase touch targets, use full-width cards",
-        "tablet": "Utilize grid layouts, maintain comfortable spacing, balance between mobile and desktop patterns",
-        "desktop": "Implement sidebar navigation, use multi-column layouts, optimize for mouse interaction"
+    "statsCard": {
+      "structure": "title + chart/counter + navigation",
+      "backgroundColor": "neutral.white",
+      "borderRadius": "16px",
+      "padding": "20px",
+      "shadow": "subtle",
+      "elements": {
+        "chart": {
+          "type": "bar_chart",
+          "height": "120px",
+          "activeColor": "secondary.warmGold",
+          "inactiveColor": "neutral.lightGray"
+        },
+        "ranking": {
+          "position": "right",
+          "backgroundColor": "secondary.warmGold",
+          "textColor": "primary.darkTeal",
+          "fontSize": "typography.latin.sizes.subheading",
+          "fontWeight": "bold"
+        }
+      }
+    },
+    "quickActions": {
+      "structure": "icon_grid",
+      "layout": "3_columns",
+      "spacing": "16px",
+      "elements": {
+        "actionItem": {
+          "backgroundColor": "neutral.white",
+          "borderRadius": "12px",
+          "padding": "16px",
+          "textAlign": "center",
+          "iconSize": "32px",
+          "fontSize": "typography.latin.sizes.body"
+        }
+      }
+    },
+    "timingsCard": {
+      "structure": "location + times_grid",
+      "backgroundColor": "primary.darkTeal",
+      "textColor": "neutral.white",
+      "borderRadius": "16px",
+      "padding": "20px",
+      "elements": {
+        "locationHeader": {
+          "fontSize": "typography.latin.sizes.subheading",
+          "fontWeight": "bold",
+          "marginBottom": "16px"
+        },
+        "timeGrid": {
+          "layout": "5_columns",
+          "spacing": "8px",
+          "itemStyle": {
+            "backgroundColor": "primary.mediumTeal",
+            "borderRadius": "8px",
+            "padding": "12px 8px",
+            "textAlign": "center"
+          }
+        }
+      }
+    },
+    "counter": {
+      "structure": "arabic_text + timer + count_display + controls",
+      "backgroundColor": "primary.darkTeal",
+      "textColor": "neutral.white",
+      "centerAligned": true,
+      "elements": {
+        "arabicText": {
+          "fontSize": "typography.arabic.sizes.heading",
+          "fontWeight": "medium",
+          "marginBottom": "32px",
+          "textAlign": "center"
+        },
+        "timer": {
+          "fontSize": "typography.latin.sizes.body",
+          "backgroundColor": "primary.mediumTeal",
+          "borderRadius": "8px",
+          "padding": "8px 16px",
+          "marginBottom": "24px"
+        },
+        "countDisplay": {
+          "fontSize": "typography.latin.sizes.display",
+          "fontWeight": "bold",
+          "color": "secondary.warmGold",
+          "marginBottom": "40px"
+        },
+        "primaryButton": {
+          "backgroundColor": "functional.info",
+          "borderRadius": "12px",
+          "width": "80px",
+          "height": "80px",
+          "marginBottom": "32px"
+        },
+        "controlButtons": {
+          "layout": "horizontal_row",
+          "spacing": "24px",
+          "buttonStyle": {
+            "backgroundColor": "primary.mediumTeal",
+            "borderRadius": "8px",
+            "padding": "12px",
+            "iconSize": "24px"
+          }
+        }
+      }
+    },
+    "navigation": {
+      "structure": "bottom_tabs",
+      "backgroundColor": "neutral.white",
+      "height": "80px",
+      "elements": {
+        "activeTab": {
+          "backgroundColor": "primary.darkTeal",
+          "borderRadius": "24px",
+          "iconColor": "neutral.white"
+        },
+        "inactiveTab": {
+          "iconColor": "neutral.mediumGray"
+        }
       }
     }
+  },
+  "designPrinciples": {
+    "visual": {
+      "contrast": "high_contrast_for_readability",
+      "hierarchy": "clear_typography_scales",
+      "whitespace": "generous_padding_and_margins",
+      "consistency": "unified_border_radius_system"
+    },
+    "islamic_elements": {
+      "patterns": {
+        "geometric": "subtle_background_overlays",
+        "implementation": "low_opacity_geometric_patterns",
+        "placement": "behind_content_as_texture"
+      },
+      "typography": {
+        "arabic": "traditional_readable_fonts",
+        "latin": "modern_clean_sans_serif"
+      },
+      "cultural": {
+        "colors": "earth_tones_with_gold_accents",
+        "respect": "appropriate_religious_iconography"
+      }
+    },
+    "usability": {
+      "accessibility": "high_contrast_ratios",
+      "touch_targets": "minimum_44px_touch_areas",
+      "feedback": "clear_visual_states",
+      "simplicity": "focused_single_purpose_screens"
+    }
+  },
+  "responsiveBreakpoints": {
+    "mobile": {
+      "width": "375px",
+      "padding": "16px",
+      "fontSize": "base"
+    },
+    "tablet": {
+      "width": "768px", 
+      "padding": "24px",
+      "fontSize": "scale_1.1x"
+    }
+  },
+  "animations": {
+    "transitions": {
+      "duration": "300ms",
+      "easing": "ease_out"
+    },
+    "interactions": {
+      "button_press": "scale_0.95",
+      "card_hover": "lift_shadow",
+      "navigation": "slide_transition"
+    }
+  },
+  "patterns": {
+    "informationArchitecture": {
+      "screenTypes": [
+        "dashboard_overview",
+        "focused_counter",
+        "settings_list",
+        "content_grid"
+      ],
+      "navigation": "bottom_tab_primary",
+      "hierarchy": "card_based_content_organization"
+    },
+    "contentStrategy": {
+      "multilingual": "arabic_primary_latin_secondary",
+      "iconography": "simple_geometric_religious_appropriate",
+      "imagery": "minimal_focused_functional"
+    }
+  },
+  "implementationGuidelines": {
+    "cardSystem": "Use consistent 16px border radius for all cards and containers",
+    "colorUsage": "Dark teal as primary background, white cards for content, gold for emphasis and active states",
+    "spacing": "16px base unit for padding, margins, and component spacing",
+    "typography": "Maintain Arabic text prominence while ensuring Latin text readability",
+    "patterns": "Apply Islamic geometric patterns subtly as background textures, not as primary visual elements",
+    "interactions": "Ensure all touch targets meet 44px minimum size requirements"
   }
+}

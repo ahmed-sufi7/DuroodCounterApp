@@ -4,7 +4,35 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
+import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+
+// Create custom themes based on our Islamic design system
+const CustomLightTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: Colors.primary.darkTeal,
+    background: Colors.neutral.lightGray,
+    card: Colors.neutral.white,
+    text: Colors.primary.darkTeal,
+    border: Colors.neutral.mediumGray,
+    notification: Colors.secondary.warmGold,
+  },
+};
+
+const CustomDarkTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    primary: Colors.secondary.warmGold,
+    background: Colors.primary.darkTeal,
+    card: Colors.primary.mediumTeal,
+    text: Colors.neutral.white,
+    border: Colors.primary.lightTeal,
+    notification: Colors.secondary.brightGold,
+  },
+};
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -13,17 +41,19 @@ export default function RootLayout() {
   });
 
   if (!loaded) {
-    // Async font loading only occurs in development.
     return null;
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={colorScheme === 'dark' ? CustomDarkTheme : CustomLightTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
-      <StatusBar style="auto" />
+      <StatusBar 
+        style={colorScheme === 'dark' ? 'light' : 'dark'} 
+        backgroundColor={colorScheme === 'dark' ? Colors.primary.darkTeal : Colors.neutral.lightGray}
+      />
     </ThemeProvider>
   );
 }

@@ -17,16 +17,21 @@ export function useDuroodCounter() {
 
   // Subscribe to global count changes
   useEffect(() => {
+    let unsubscribe: (() => void) | undefined;
+    
     try {
-      const unsubscribe = firebaseService.subscribeToGlobalCount((count) => {
+      unsubscribe = firebaseService.subscribeToGlobalCount((count) => {
         setGlobalCount(count);
       });
-
-      return unsubscribe;
     } catch (error) {
       console.warn('Failed to subscribe to Firebase updates:', error);
-      // Continue without real-time updates
     }
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, []);
 
   const loadInitialData = async () => {
