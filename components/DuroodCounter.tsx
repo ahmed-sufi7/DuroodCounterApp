@@ -132,6 +132,11 @@ export function DuroodCounter() {
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
           {/* Mission Section */}
           <View style={styles.missionSection}>
+            <View style={styles.sectionHeader}>
+              <View style={styles.sectionHeaderLine} />
+              <Text style={styles.sectionHeaderText}>Global Mission</Text>
+              <View style={styles.sectionHeaderLine} />
+            </View>
             <View style={styles.missionCard}>
               <View style={styles.missionHeader}>
                 <Text style={styles.missionTitle}>🎯 Global Mission</Text>
@@ -173,6 +178,11 @@ export function DuroodCounter() {
 
           {/* Personal Stats */}
           <View style={styles.personalStatsSection}>
+            <View style={styles.sectionHeader}>
+              <View style={styles.sectionHeaderLine} />
+              <Text style={styles.sectionHeaderText}>Your Progress</Text>
+              <View style={styles.sectionHeaderLine} />
+            </View>
             <View style={styles.personalStatCard}>
               <Text style={styles.personalStatTitle}>Your Contribution</Text>
               <Text style={styles.personalStatNumber}>{formatNumber(personalCount)}</Text>
@@ -184,6 +194,11 @@ export function DuroodCounter() {
           </View>
 
           {/* Main Counter Section */}
+          <View style={styles.sectionHeader}>
+            <View style={styles.sectionHeaderLine} />
+            <Text style={styles.sectionHeaderText}>Recite Durood</Text>
+            <View style={styles.sectionHeaderLine} />
+          </View>
           <View style={styles.mainSection}>
             {/* Arabic Text */}
             <View style={styles.arabicContainer}>
@@ -209,7 +224,7 @@ export function DuroodCounter() {
                   )}
                 </TouchableOpacity>
               </Animated.View>
-              <Text style={styles.counterHint}>Long press for quick add</Text>
+              
             </View>
 
             {/* Action Buttons */}
@@ -341,11 +356,32 @@ const styles = StyleSheet.create({
   headerButtonText: {
     fontSize: 18,
   },
+  // Section Headers
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingHorizontal: 4,
+  },
+  sectionHeaderLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: Colors.secondary.warmGold,
+    opacity: 0.3,
+  },
+  sectionHeaderText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: Colors.neutral.white,
+    marginHorizontal: 16,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
   // Mission Section
   missionSection: {
     paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 8,
+    paddingTop: 20,
+    paddingBottom: 16,
   },
   missionCard: {
     backgroundColor: Colors.neutral.white,
@@ -464,7 +500,8 @@ const styles = StyleSheet.create({
   // Personal Stats Section
   personalStatsSection: {
     paddingHorizontal: 16,
-    paddingBottom: 8,
+    paddingTop: 16,
+    paddingBottom: 16,
   },
   personalStatCard: {
     backgroundColor: Colors.neutral.white,
@@ -517,7 +554,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Colors.neutral.lightGray,
     marginHorizontal: 16,
-    marginVertical: 20,
+    marginTop: 16,
+    marginBottom: 20,
     borderRadius: 24,
   },
   arabicContainer: {
