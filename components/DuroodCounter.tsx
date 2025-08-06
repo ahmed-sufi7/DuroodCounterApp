@@ -3,11 +3,13 @@ import {
   ActivityIndicator,
   Alert,
   Animated,
+  Modal,
   Platform,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -33,6 +35,9 @@ export function DuroodCounter() {
 
   const { formattedCountdown } = useCountdown();
   const [buttonScale] = useState(new Animated.Value(1));
+  const [showBulkModal, setShowBulkModal] = useState(false);
+  const [bulkCountInput, setBulkCountInput] = useState('');
+  const [isBulkProcessing, setIsBulkProcessing] = useState(false);
 
   const progress = calculateProgress(globalCount, targetCount);
 
@@ -61,39 +66,58 @@ export function DuroodCounter() {
   };
 
   const handleBulkAdd = () => {
-    Alert.prompt(
-      'Add Bulk Count',
-      'Enter the number of Durood recited:',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Add',
-          onPress: async (value) => {
-            if (value) {
-              const count = parseInt(value, 10);
-              if (isNaN(count) || count <= 0) {
-                Alert.alert('Error', 'Please enter a valid number');
-                return;
-              }
-              
-              if (count > 10000) {
-                Alert.alert(
-                  'Confirm Large Number',
-                  `Are you sure you want to add ${formatNumber(count)} Durood?`,
-                  [
-                    { text: 'Cancel', style: 'cancel' },
-                    { text: 'Yes', onPress: () => addBulkCount(count) },
-                  ]
-                );
-              } else {
+    setShowBulkModal(true);
+    setBulkCountInput('');
+  };
+
+  const handleBulkSubmit = async () => {
+    const count = parseInt(bulkCountInput.trim(), 10);
+    
+    if (isNaN(count) || count <= 0) {
+      Alert.alert('Invalid Input', 'Please enter a valid number greater than 0');
+      return;
+    }
+
+    if (count > 50000) {
+      Alert.alert(
+        'Large Number Warning',
+        `Are you sure you want to add ${formatNumber(count)} Durood? This is a very large number.`,
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { 
+            text: 'Confirm', 
+            onPress: async () => {
+              setIsBulkProcessing(true);
+              try {
                 await addBulkCount(count);
+                setShowBulkModal(false);
+                setBulkCountInput('');
+              } catch (error) {
+                Alert.alert('Error', 'Failed to add bulk count');
+              } finally {
+                setIsBulkProcessing(false);
               }
             }
           },
-        },
-      ],
-      'plain-text'
-    );
+        ]
+      );
+    } else {
+      setIsBulkProcessing(true);
+      try {
+        await addBulkCount(count);
+        setShowBulkModal(false);
+        setBulkCountInput('');
+      } catch (error) {
+        Alert.alert('Error', 'Failed to add bulk count');
+      } finally {
+        setIsBulkProcessing(false);
+      }
+    }
+  };
+
+  const closeBulkModal = () => {
+    setShowBulkModal(false);
+    setBulkCountInput('');
   };
 
   if (isLoading) {
@@ -291,6 +315,86 @@ export function DuroodCounter() {
             </View>
           )}
         </ScrollView>
+
+        {/* Bulk Add Modal */}
+        <Modal
+          visible={showBulkModal}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={closeBulkModal}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContainer}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>📝 Add Bulk Count</Text>
+                <Text style={styles.modalSubtitle}>Enter the number of Durood you have recited</Text>
+              </View>
+
+              <View style={styles.modalContent}>
+                <View style={styles.inputContainer}>
+                  <Text style={styles.inputLabel}>Number of Durood</Text>
+                  <TextInput
+                    style={styles.bulkInput}
+                    value={bulkCountInput}
+                    onChangeText={setBulkCountInput}
+                    placeholder="Enter count..."
+                    placeholderTextColor={Colors.neutral.mediumGray}
+                    keyboardType="numeric"
+                    autoFocus={true}
+                    maxLength={10}
+                  />
+                  {bulkCountInput && !isNaN(parseInt(bulkCountInput)) && (
+                    <Text style={styles.inputHint}>
+                      Adding: {formatNumber(parseInt(bulkCountInput))} Durood
+                    </Text>
+                  )}
+                </View>
+
+                <View style={styles.quickAmounts}>
+                  <Text style={styles.quickAmountsLabel}>Quick Select:</Text>
+                  <View style={styles.quickAmountButtons}>
+                    {[33, 100, 300, 500, 1000].map((amount) => (
+                      <TouchableOpacity
+                        key={amount}
+                        style={styles.quickAmountButton}
+                        onPress={() => setBulkCountInput(amount.toString())}
+                        activeOpacity={0.7}
+                      >
+                        <Text style={styles.quickAmountText}>{amount}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.modalActions}>
+                <TouchableOpacity
+                  style={styles.modalCancelButton}
+                  onPress={closeBulkModal}
+                  activeOpacity={0.8}
+                >
+                  <Text style={styles.modalCancelText}>Cancel</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[
+                    styles.modalConfirmButton,
+                    (!bulkCountInput || isNaN(parseInt(bulkCountInput)) || parseInt(bulkCountInput) <= 0) && styles.modalConfirmButtonDisabled
+                  ]}
+                  onPress={handleBulkSubmit}
+                  disabled={!bulkCountInput || isNaN(parseInt(bulkCountInput)) || parseInt(bulkCountInput) <= 0 || isBulkProcessing}
+                  activeOpacity={0.8}
+                >
+                  {isBulkProcessing ? (
+                    <ActivityIndicator size="small" color={Colors.neutral.white} />
+                  ) : (
+                    <Text style={styles.modalConfirmText}>Add Count</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </SafeAreaView>
     </View>
   );
@@ -693,5 +797,147 @@ const styles = StyleSheet.create({
     color: Colors.neutral.white,
     fontSize: 12,
     fontWeight: '500',
+  },
+  // Bulk Add Modal Styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContainer: {
+    backgroundColor: Colors.neutral.white,
+    borderRadius: 24,
+    width: '100%',
+    maxWidth: 400,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 15,
+  },
+  modalHeader: {
+    alignItems: 'center',
+    padding: 24,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.neutral.lightGray,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: Colors.primary.darkTeal,
+    marginBottom: 4,
+    textAlign: 'center',
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    color: Colors.neutral.darkGray,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  modalContent: {
+    padding: 24,
+    paddingTop: 20,
+  },
+  inputContainer: {
+    marginBottom: 24,
+  },
+  inputLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: Colors.primary.darkTeal,
+    marginBottom: 8,
+  },
+  bulkInput: {
+    backgroundColor: Colors.neutral.lightGray,
+    borderRadius: 12,
+    padding: 16,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.primary.darkTeal,
+    textAlign: 'center',
+    borderWidth: 2,
+    borderColor: Colors.neutral.lightGray,
+  },
+  inputHint: {
+    fontSize: 12,
+    color: Colors.secondary.warmGold,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginTop: 8,
+  },
+  quickAmounts: {
+    marginBottom: 8,
+  },
+  quickAmountsLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: Colors.primary.darkTeal,
+    marginBottom: 12,
+  },
+  quickAmountButtons: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  quickAmountButton: {
+    backgroundColor: Colors.neutral.lightGray,
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    minWidth: 60,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.neutral.mediumGray,
+  },
+  quickAmountText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: Colors.primary.darkTeal,
+  },
+  modalActions: {
+    flexDirection: 'row',
+    padding: 20,
+    paddingTop: 16,
+    gap: 12,
+  },
+  modalCancelButton: {
+    flex: 1,
+    backgroundColor: Colors.neutral.lightGray,
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.neutral.mediumGray,
+  },
+  modalCancelText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: Colors.neutral.darkGray,
+  },
+  modalConfirmButton: {
+    flex: 1,
+    backgroundColor: Colors.secondary.warmGold,
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  modalConfirmButtonDisabled: {
+    backgroundColor: Colors.neutral.mediumGray,
+    shadowOpacity: 0,
+    elevation: 0,
+  },
+  modalConfirmText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.primary.darkTeal,
   },
 }); 
