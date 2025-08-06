@@ -170,7 +170,11 @@ export function DuroodCounter() {
           </TouchableOpacity>
         </View>
 
-        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        <ScrollView 
+          style={styles.scrollView} 
+          contentContainerStyle={styles.scrollViewContent}
+          showsVerticalScrollIndicator={false}
+        >
           {/* Mission Section */}
           <View style={styles.missionSection}>
             <View style={styles.sectionHeader}>
@@ -410,6 +414,9 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  scrollViewContent: {
+    paddingBottom: 30,
   },
   loadingContainer: {
     flex: 1,
