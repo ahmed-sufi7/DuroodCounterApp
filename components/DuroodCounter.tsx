@@ -130,44 +130,55 @@ export function DuroodCounter() {
         </View>
 
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-          {/* Countdown Section */}
-          <View style={styles.countdownSection}>
-            <View style={styles.countdownCard}>
-              <View style={styles.countdownHeader}>
-                <View style={styles.countdownIconContainer}>
-                  <Text style={styles.countdownIcon}>🕌</Text>
+          {/* Mission Section */}
+          <View style={styles.missionSection}>
+            <View style={styles.missionCard}>
+              <View style={styles.missionHeader}>
+                <Text style={styles.missionTitle}>🎯 Global Mission</Text>
+                <Text style={styles.missionGoal}>15 Crore Durood for Milad un Nabi</Text>
+              </View>
+              
+              <View style={styles.missionProgress}>
+                <View style={styles.progressStats}>
+                  <View style={styles.progressItem}>
+                    <Text style={styles.progressNumber}>{formatNumber(globalCount)}</Text>
+                    <Text style={styles.progressLabel}>Completed</Text>
+                  </View>
+                  <View style={styles.progressDivider} />
+                  <View style={styles.progressItem}>
+                    <Text style={styles.progressNumber}>{formatNumber(targetCount - globalCount)}</Text>
+                    <Text style={styles.progressLabel}>Remaining</Text>
+                  </View>
                 </View>
-                <View style={styles.countdownInfo}>
-                  <Text style={styles.countdownTitle}>Milad un Nabi Countdown</Text>
-                  <Text style={styles.countdownSubtitle}>Community Target: 15 Crore</Text>
+                
+                <View style={styles.progressBarContainer}>
+                  <View style={styles.progressBar}>
+                    <View style={[styles.progressBarFill, { width: `${progress}%` }]} />
+                  </View>
+                  <Text style={styles.progressPercentage}>{progress.toFixed(2)}% Complete</Text>
                 </View>
               </View>
-              <View style={styles.countdownTimerContainer}>
-                <Text style={styles.countdownTime}>{formattedCountdown}</Text>
-                <Text style={styles.countdownLabel}>Time Remaining</Text>
+
+              <View style={styles.timerSection}>
+                <View style={styles.timerIcon}>
+                  <Text style={styles.timerEmoji}>⏰</Text>
+                </View>
+                <View style={styles.timerContent}>
+                  <Text style={styles.timerLabel}>Time to Milad un Nabi</Text>
+                  <Text style={styles.timerValue}>{formattedCountdown}</Text>
+                </View>
               </View>
             </View>
           </View>
 
-          {/* Stats Row */}
-          <View style={styles.statsRow}>
-            <View style={styles.statCard}>
-              <Text style={styles.statNumber}>{formatNumber(globalCount)}</Text>
-              <Text style={styles.statLabel}>Global Count</Text>
-              <Text style={styles.targetText}>🎯 Target: {formatNumber(targetCount)}</Text>
-              <View style={styles.progressIndicator}>
-                <View style={[styles.progressFill, { width: `${progress}%` }]} />
-              </View>
-              <Text style={styles.progressText}>{progress.toFixed(1)}% complete</Text>
-            </View>
-            
-            <View style={styles.statCard}>
-              <Text style={[styles.statNumber, { color: Colors.secondary.warmGold }]}>
-                {formatNumber(personalCount)}
-              </Text>
-              <Text style={styles.statLabel}>Your Count</Text>
+          {/* Personal Stats */}
+          <View style={styles.personalStatsSection}>
+            <View style={styles.personalStatCard}>
+              <Text style={styles.personalStatTitle}>Your Contribution</Text>
+              <Text style={styles.personalStatNumber}>{formatNumber(personalCount)}</Text>
+              <Text style={styles.personalStatLabel}>Durood Recited</Text>
               <View style={styles.contributionBadge}>
-                <Text style={styles.contributionText}>🌟 Active</Text>
+                <Text style={styles.contributionText}>🌟 Keep Going!</Text>
               </View>
             </View>
           </View>
@@ -330,129 +341,162 @@ const styles = StyleSheet.create({
   headerButtonText: {
     fontSize: 18,
   },
-  // Countdown Section
-  countdownSection: {
+  // Mission Section
+  missionSection: {
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 8,
   },
-  countdownCard: {
+  missionCard: {
     backgroundColor: Colors.neutral.white,
     borderRadius: 20,
-    padding: 20,
+    padding: 24,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 8,
-    borderLeftWidth: 4,
-    borderLeftColor: Colors.secondary.warmGold,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    elevation: 10,
   },
-  countdownHeader: {
-    flexDirection: 'row',
+  missionHeader: {
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 24,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.neutral.lightGray,
   },
-  countdownIconContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: Colors.primary.lightTeal,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  countdownIcon: {
-    fontSize: 24,
-  },
-  countdownInfo: {
-    flex: 1,
-  },
-  countdownTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: Colors.primary.darkTeal,
-    marginBottom: 2,
-  },
-  countdownSubtitle: {
-    fontSize: 13,
-    color: Colors.neutral.darkGray,
-    opacity: 0.8,
-  },
-  countdownTimerContainer: {
-    backgroundColor: Colors.primary.lightTeal,
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
-  },
-  countdownTime: {
-    fontSize: 24,
+  missionTitle: {
+    fontSize: 18,
     fontWeight: 'bold',
     color: Colors.primary.darkTeal,
     marginBottom: 4,
     textAlign: 'center',
   },
-  countdownLabel: {
-    fontSize: 12,
-    color: Colors.primary.darkTeal,
-    opacity: 0.8,
+  missionGoal: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: Colors.secondary.warmGold,
     textAlign: 'center',
   },
-  // Stats Row
-  statsRow: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingVertical: 20,
-    gap: 12,
+  missionProgress: {
+    marginBottom: 20,
   },
-  statCard: {
+  progressStats: {
+    flexDirection: 'row',
+    marginBottom: 16,
+  },
+  progressItem: {
     flex: 1,
+    alignItems: 'center',
+  },
+  progressNumber: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: Colors.primary.darkTeal,
+    marginBottom: 4,
+  },
+  progressLabel: {
+    fontSize: 12,
+    color: Colors.neutral.darkGray,
+    fontWeight: '500',
+  },
+  progressDivider: {
+    width: 1,
+    backgroundColor: Colors.neutral.lightGray,
+    marginHorizontal: 16,
+  },
+  progressBarContainer: {
+    alignItems: 'center',
+  },
+  progressBar: {
+    width: '100%',
+    height: 8,
+    backgroundColor: Colors.neutral.lightGray,
+    borderRadius: 4,
+    overflow: 'hidden',
+    marginBottom: 8,
+  },
+  progressBarFill: {
+    height: '100%',
+    backgroundColor: Colors.secondary.warmGold,
+    borderRadius: 4,
+  },
+  progressPercentage: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: Colors.primary.darkTeal,
+  },
+  timerSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.primary.darkTeal,
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 2,
+    borderColor: Colors.secondary.warmGold,
+  },
+  timerIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: Colors.secondary.warmGold,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  timerEmoji: {
+    fontSize: 24,
+  },
+  timerContent: {
+    flex: 1,
+  },
+  timerLabel: {
+    fontSize: 12,
+    color: Colors.neutral.white,
+    fontWeight: '500',
+    marginBottom: 4,
+    opacity: 0.9,
+  },
+  timerValue: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.secondary.warmGold,
+  },
+  // Personal Stats Section
+  personalStatsSection: {
+    paddingHorizontal: 16,
+    paddingBottom: 8,
+  },
+  personalStatCard: {
     backgroundColor: Colors.neutral.white,
     borderRadius: 16,
     padding: 20,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowRadius: 10,
+    elevation: 6,
+    borderTopWidth: 3,
+    borderTopColor: Colors.secondary.warmGold,
   },
-  statNumber: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  personalStatTitle: {
+    fontSize: 14,
+    fontWeight: '600',
     color: Colors.primary.darkTeal,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  personalStatNumber: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: Colors.secondary.warmGold,
     marginBottom: 4,
   },
-  statLabel: {
+  personalStatLabel: {
     fontSize: 12,
     color: Colors.neutral.darkGray,
     textAlign: 'center',
-    marginBottom: 8,
-  },
-  targetText: {
-    fontSize: 11,
-    color: Colors.secondary.warmGold,
-    textAlign: 'center',
-    fontWeight: '600',
     marginBottom: 12,
-  },
-  progressIndicator: {
-    width: '100%',
-    height: 6,
-    backgroundColor: Colors.neutral.lightGray,
-    borderRadius: 3,
-    overflow: 'hidden',
-    marginBottom: 8,
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: Colors.secondary.warmGold,
-    borderRadius: 3,
-  },
-  progressText: {
-    fontSize: 10,
-    color: Colors.neutral.darkGray,
-    textAlign: 'center',
   },
   contributionBadge: {
     backgroundColor: Colors.secondary.warmGold,
