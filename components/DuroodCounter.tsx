@@ -668,8 +668,6 @@ const styles = StyleSheet.create({
       shadowRadius: 10,
       elevation: 6,
     }),
-    borderTopWidth: 3,
-    borderTopColor: Colors.secondary.warmGold,
   },
   personalStatTitle: {
     fontSize: 14,
