@@ -1,4 +1,5 @@
 import * as SystemUI from 'expo-system-ui';
+import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -50,8 +51,7 @@ export function DuroodCounter() {
   }, []);
 
   const handleSettingsPress = () => {
-    // TODO: Add settings functionality here
-    Alert.alert('Settings', 'Settings menu coming soon!');
+    router.push('/settings');
   };
 
   const animateButton = () => {

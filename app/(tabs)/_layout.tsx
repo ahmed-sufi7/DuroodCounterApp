@@ -26,6 +26,19 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ color, focused }) => (
+            <IconSymbol 
+              size={focused ? 32 : 28} 
+              name="gearshape.fill" 
+              color={focused ? Colors.secondary.warmGold : color}
+            />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
