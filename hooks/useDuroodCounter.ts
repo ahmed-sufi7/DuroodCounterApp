@@ -46,11 +46,14 @@ export function useDuroodCounter() {
       // Set loading to false immediately after personal count loads
       setIsLoading(false);
 
-      // Load global count in background (non-blocking)
+      // Initialize Firebase database and load global count in background
       try {
+        await firebaseService.initializeDatabase();
         const global = await firebaseService.getGlobalCount();
         setGlobalCount(global);
+        console.log('✅ Firebase connected and global count loaded');
       } catch (firebaseError) {
+        console.warn('⚠️ Firebase connection failed, working offline:', firebaseError);
         setGlobalCount(0); // Start with 0 if Firebase is not available
       }
     } catch (err) {
@@ -69,11 +72,14 @@ export function useDuroodCounter() {
       const newPersonalCount = await storageService.incrementPersonalCount(increment);
       setPersonalCount(newPersonalCount);
 
-      // Update global count in background (non-blocking)
-      firebaseService.incrementGlobalCount(increment).catch((err) => {
-        console.error('Firebase update failed:', err);
-        // Don't show error to user for Firebase issues
-      });
+      // Update global count and handle errors properly
+      try {
+        await firebaseService.incrementGlobalCount(increment);
+        console.log('✅ Global count updated successfully');
+      } catch (err) {
+        console.error('❌ Firebase update failed:', err);
+        setError('Failed to sync with global count. Your personal count is saved.');
+      }
     } catch (err) {
       setError('Failed to increment count');
       console.error('Error incrementing count:', err);
@@ -96,11 +102,14 @@ export function useDuroodCounter() {
       const newPersonalCount = await storageService.incrementPersonalCount(count);
       setPersonalCount(newPersonalCount);
 
-      // Update global count in background (non-blocking)
-      firebaseService.incrementGlobalCount(count).catch((err) => {
-        console.error('Firebase update failed:', err);
-        // Don't show error to user for Firebase issues
-      });
+      // Update global count and handle errors properly
+      try {
+        await firebaseService.incrementGlobalCount(count);
+        console.log('✅ Global count updated successfully');
+      } catch (err) {
+        console.error('❌ Firebase update failed:', err);
+        setError('Failed to sync with global count. Your personal count is saved.');
+      }
     } catch (err) {
       setError('Failed to add bulk count');
       console.error('Error adding bulk count:', err);

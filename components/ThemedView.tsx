@@ -1,4 +1,4 @@
-import { View, type ViewProps } from 'react-native';
+import { Platform, View, type ViewProps } from 'react-native';
 
 import { Colors } from '@/constants/Colors';
 import { useThemeColor } from '@/hooks/useThemeColor';
@@ -25,11 +25,15 @@ export function ThemedView({
           backgroundColor: Colors.neutral.white,
           borderRadius: 16,
           padding: 20,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.1,
-          shadowRadius: 12,
-          elevation: 4,
+          ...(Platform.OS === 'web' ? {
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+          } : {
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.1,
+            shadowRadius: 12,
+            elevation: 4,
+          }),
         };
       case 'section':
         return {

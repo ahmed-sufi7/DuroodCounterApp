@@ -41,6 +41,11 @@ export function DuroodCounter() {
 
   const progress = calculateProgress(globalCount, targetCount);
 
+  const handleSettingsPress = () => {
+    // TODO: Add settings functionality here
+    Alert.alert('Settings', 'Settings menu coming soon!');
+  };
+
   const animateButton = () => {
     Animated.sequence([
       Animated.timing(buttonScale, {
@@ -92,7 +97,7 @@ export function DuroodCounter() {
                 await addBulkCount(count);
                 setShowBulkModal(false);
                 setBulkCountInput('');
-              } catch (error) {
+              } catch {
                 Alert.alert('Error', 'Failed to add bulk count');
               } finally {
                 setIsBulkProcessing(false);
@@ -107,7 +112,7 @@ export function DuroodCounter() {
         await addBulkCount(count);
         setShowBulkModal(false);
         setBulkCountInput('');
-      } catch (error) {
+      } catch {
         Alert.alert('Error', 'Failed to add bulk count');
       } finally {
         setIsBulkProcessing(false);
@@ -165,7 +170,7 @@ export function DuroodCounter() {
             <Text style={styles.greeting}>السلام عليكم</Text>
             <Text style={styles.appTitle}>Durood Counter</Text>
           </View>
-          <TouchableOpacity style={styles.headerButton}>
+          <TouchableOpacity style={styles.headerButton} onPress={handleSettingsPress}>
             <Text style={styles.headerButtonText}>⚙️</Text>
           </TouchableOpacity>
         </View>
@@ -185,7 +190,7 @@ export function DuroodCounter() {
             <View style={styles.missionCard}>
               <View style={styles.missionHeader}>
                 <Text style={styles.missionTitle}>🎯 Global Mission</Text>
-                <Text style={styles.missionGoal}>15 Crore Durood for Milad un Nabi</Text>
+                <Text style={styles.missionGoal}>15 Crore Durood for Milad un Nabi ﷺ</Text>
               </View>
               
               <View style={styles.missionProgress}>
@@ -214,7 +219,7 @@ export function DuroodCounter() {
                   <Text style={styles.timerEmoji}>⏰</Text>
                 </View>
                 <View style={styles.timerContent}>
-                  <Text style={styles.timerLabel}>Time to Milad un Nabi</Text>
+                  <Text style={styles.timerLabel}>Time to Milad un Nabi ﷺ</Text>
                   <Text style={styles.timerValue}>{formattedCountdown}</Text>
                 </View>
               </View>
@@ -429,11 +434,15 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 32,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 8,
+    ...(Platform.OS === 'web' ? {
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+    } : {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.1,
+      shadowRadius: 12,
+      elevation: 8,
+    }),
   },
   loadingText: {
     fontSize: 24,
@@ -515,11 +524,15 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.neutral.white,
     borderRadius: 20,
     padding: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.15,
-    shadowRadius: 16,
-    elevation: 10,
+    ...(Platform.OS === 'web' ? {
+      boxShadow: '0 6px 16px rgba(0, 0, 0, 0.15)',
+    } : {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 6 },
+      shadowOpacity: 0.15,
+      shadowRadius: 16,
+      elevation: 10,
+    }),
   },
   missionHeader: {
     alignItems: 'center',
@@ -636,11 +649,15 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 6,
+    ...(Platform.OS === 'web' ? {
+      boxShadow: '0 3px 10px rgba(0, 0, 0, 0.1)',
+    } : {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 3 },
+      shadowOpacity: 0.1,
+      shadowRadius: 10,
+      elevation: 6,
+    }),
     borderTopWidth: 3,
     borderTopColor: Colors.secondary.warmGold,
   },
@@ -690,11 +707,15 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     marginBottom: 32,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    ...(Platform.OS === 'web' ? {
+      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+    } : {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 8,
+      elevation: 4,
+    }),
   },
   arabicText: {
     fontSize: 20,
@@ -725,11 +746,15 @@ const styles = StyleSheet.create({
     borderRadius: 70,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 12,
+    ...(Platform.OS === 'web' ? {
+      boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
+    } : {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: 0.3,
+      shadowRadius: 16,
+      elevation: 12,
+    }),
     borderWidth: 4,
     borderColor: Colors.neutral.white,
   },
@@ -765,11 +790,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    ...(Platform.OS === 'web' ? {
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    } : {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.1,
+      shadowRadius: 8,
+      elevation: 4,
+    }),
   },
   actionButtonEmoji: {
     fontSize: 24,
@@ -818,11 +847,15 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     width: '100%',
     maxWidth: 400,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
-    elevation: 15,
+    ...(Platform.OS === 'web' ? {
+      boxShadow: '0 10px 20px rgba(0, 0, 0, 0.3)',
+    } : {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 10 },
+      shadowOpacity: 0.3,
+      shadowRadius: 20,
+      elevation: 15,
+    }),
   },
   modalHeader: {
     alignItems: 'center',
@@ -931,16 +964,24 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 6,
+    ...(Platform.OS === 'web' ? {
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+    } : {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.2,
+      shadowRadius: 8,
+      elevation: 6,
+    }),
   },
   modalConfirmButtonDisabled: {
     backgroundColor: Colors.neutral.mediumGray,
-    shadowOpacity: 0,
-    elevation: 0,
+    ...(Platform.OS === 'web' ? {
+      boxShadow: 'none',
+    } : {
+      shadowOpacity: 0,
+      elevation: 0,
+    }),
   },
   modalConfirmText: {
     fontSize: 16,

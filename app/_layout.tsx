@@ -51,8 +51,8 @@ export default function RootLayout() {
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar 
-        style={colorScheme === 'dark' ? 'light' : 'dark'} 
-        backgroundColor={colorScheme === 'dark' ? Colors.primary.darkTeal : Colors.neutral.lightGray}
+        style="light"
+        backgroundColor={Colors.primary.darkTeal}
       />
     </ThemeProvider>
   );

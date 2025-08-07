@@ -1,0 +1,14 @@
+{
+  "rules": {
+    "globalCount": {
+      ".read": true,
+      ".write": true
+    },
+    "lastUpdated": {
+      ".read": true,
+      ".write": true
+    },
+    ".read": false,
+    ".write": false
+  }
+}

@@ -16,6 +16,9 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "navigationBar": {
+        "backgroundColor": "#2D4A4A"
+      },
       "edgeToEdgeEnabled": true
     },
     "web": {
