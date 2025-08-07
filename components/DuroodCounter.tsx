@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import * as SystemUI from 'expo-system-ui';
+import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -40,6 +41,13 @@ export function DuroodCounter() {
   const [isBulkProcessing, setIsBulkProcessing] = useState(false);
 
   const progress = calculateProgress(globalCount, targetCount);
+
+  // Set navigation bar color on Android
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      SystemUI.setBackgroundColorAsync(Colors.primary.darkTeal);
+    }
+  }, []);
 
   const handleSettingsPress = () => {
     // TODO: Add settings functionality here
@@ -244,73 +252,75 @@ export function DuroodCounter() {
           </View>
 
           {/* Main Counter Section */}
-          <View style={styles.sectionHeader}>
-            <View style={styles.sectionHeaderLine} />
-            <Text style={styles.sectionHeaderText}>Recite Durood</Text>
-            <View style={styles.sectionHeaderLine} />
-          </View>
-          <View style={styles.mainSection}>
-            {/* Arabic Text */}
-            <View style={styles.arabicContainer}>
-              <Text style={styles.arabicText}>
-                اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ
-              </Text>
+          <View style={styles.counterSection}>
+            <View style={styles.sectionHeader}>
+              <View style={styles.sectionHeaderLine} />
+              <Text style={styles.sectionHeaderText}>Recite Durood</Text>
+              <View style={styles.sectionHeaderLine} />
             </View>
+            <View style={styles.mainSection}>
+              {/* Arabic Text */}
+              <View style={styles.arabicContainer}>
+                <Text style={styles.arabicText}>
+                  اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ
+                </Text>
+              </View>
 
-            {/* Counter Display */}
-            <View style={styles.counterDisplay}>
-              <Text style={styles.counterLabel}>TAP TO COUNT</Text>
-              <Animated.View style={[styles.counterButtonContainer, { transform: [{ scale: buttonScale }] }]}>
+              {/* Counter Display */}
+              <View style={styles.counterDisplay}>
+                <Text style={styles.counterLabel}>TAP TO COUNT</Text>
+                <Animated.View style={[styles.counterButtonContainer, { transform: [{ scale: buttonScale }] }]}>
+                  <TouchableOpacity
+                    style={[styles.counterButton, isIncrementing && styles.counterButtonDisabled]}
+                    onPress={handleIncrement}
+                    disabled={isIncrementing}
+                    activeOpacity={0.7}
+                  >
+                    {isIncrementing ? (
+                      <ActivityIndicator size="large" color={Colors.neutral.white} />
+                    ) : (
+                      <Text style={styles.counterButtonText}>+1</Text>
+                    )}
+                  </TouchableOpacity>
+                </Animated.View>
+                
+              </View>
+
+              {/* Action Buttons */}
+              <View style={styles.actionButtons}>
                 <TouchableOpacity
-                  style={[styles.counterButton, isIncrementing && styles.counterButtonDisabled]}
-                  onPress={handleIncrement}
-                  disabled={isIncrementing}
-                  activeOpacity={0.7}
+                  style={styles.actionButton}
+                  onPress={handleBulkAdd}
+                  activeOpacity={0.8}
                 >
-                  {isIncrementing ? (
-                    <ActivityIndicator size="large" color={Colors.neutral.white} />
-                  ) : (
-                    <Text style={styles.counterButtonText}>+1</Text>
-                  )}
+                  <View style={styles.actionButtonIcon}>
+                    <Text style={styles.actionButtonEmoji}>📝</Text>
+                  </View>
+                  <Text style={styles.actionButtonText}>Bulk Add</Text>
                 </TouchableOpacity>
-              </Animated.View>
-              
-            </View>
 
-            {/* Action Buttons */}
-            <View style={styles.actionButtons}>
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={handleBulkAdd}
-                activeOpacity={0.8}
-              >
-                <View style={styles.actionButtonIcon}>
-                  <Text style={styles.actionButtonEmoji}>📝</Text>
-                </View>
-                <Text style={styles.actionButtonText}>Bulk Add</Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.actionButton}
+                  onPress={() => Alert.alert('History', 'History feature coming soon!')}
+                  activeOpacity={0.8}
+                >
+                  <View style={styles.actionButtonIcon}>
+                    <Text style={styles.actionButtonEmoji}>📊</Text>
+                  </View>
+                  <Text style={styles.actionButtonText}>History</Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={() => Alert.alert('History', 'History feature coming soon!')}
-                activeOpacity={0.8}
-              >
-                <View style={styles.actionButtonIcon}>
-                  <Text style={styles.actionButtonEmoji}>📊</Text>
-                </View>
-                <Text style={styles.actionButtonText}>History</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={() => Alert.alert('Share', 'Share feature coming soon!')}
-                activeOpacity={0.8}
-              >
-                <View style={styles.actionButtonIcon}>
-                  <Text style={styles.actionButtonEmoji}>📤</Text>
-                </View>
-                <Text style={styles.actionButtonText}>Share</Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.actionButton}
+                  onPress={() => Alert.alert('Share', 'Share feature coming soon!')}
+                  activeOpacity={0.8}
+                >
+                  <View style={styles.actionButtonIcon}>
+                    <Text style={styles.actionButtonEmoji}>📤</Text>
+                  </View>
+                  <Text style={styles.actionButtonText}>Share</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
 
@@ -517,8 +527,8 @@ const styles = StyleSheet.create({
   // Mission Section
   missionSection: {
     paddingHorizontal: 16,
-    paddingTop: 20,
-    paddingBottom: 16,
+    paddingTop: 16, // Standardized to 16
+    paddingBottom: 16, // Keep consistent
   },
   missionCard: {
     backgroundColor: Colors.neutral.white,
@@ -642,7 +652,7 @@ const styles = StyleSheet.create({
   personalStatsSection: {
     paddingHorizontal: 16,
     paddingTop: 16,
-    paddingBottom: 16,
+    paddingBottom: 16, // Standardized to 16
   },
   personalStatCard: {
     backgroundColor: Colors.neutral.white,
@@ -691,15 +701,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.primary.darkTeal,
   },
+  // Counter Section
+  counterSection: {
+    paddingHorizontal: 16,
+    paddingTop: 16, // Reduced from 24 to match other sections
+    paddingBottom: 16, // Standardized to 16
+  },
   // Main Section
   mainSection: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 16, // Changed from 20 to match other sections
     paddingVertical: 32,
     alignItems: 'center',
     backgroundColor: Colors.neutral.lightGray,
-    marginHorizontal: 16,
-    marginTop: 16,
+    marginHorizontal: 0, // Removed margin since counterSection now handles padding
+    marginTop: 0, // Changed from 8 to 0 to bring closer to heading
     borderRadius: 24,
   },
   arabicContainer: {
@@ -776,7 +792,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '100%',
-    paddingHorizontal: 20,
+    paddingHorizontal: 4, // Reduced from 20 to compensate for reduced section padding
   },
   actionButton: {
     alignItems: 'center',

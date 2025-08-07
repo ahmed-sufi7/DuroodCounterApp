@@ -17,7 +17,12 @@
         "backgroundColor": "#ffffff"
       },
       "navigationBar": {
-        "backgroundColor": "#2D4A4A"
+        "backgroundColor": "#2D4A4A",
+        "visible": "immersive"
+      },
+      "statusBar": {
+        "backgroundColor": "#2D4A4A",
+        "barStyle": "light-content"
       },
       "edgeToEdgeEnabled": true
     },
