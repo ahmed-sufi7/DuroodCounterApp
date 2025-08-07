@@ -340,7 +340,7 @@ export function Settings() {
                 activeOpacity={0.8}
               >
                 <View style={styles.contactActionIcon}>
-                  <Text style={styles.contactActionEmoji}>📞</Text>
+                  <Text style={styles.contactActionEmoji}>📱</Text>
                 </View>
                 <Text style={styles.contactActionText}>Call</Text>
               </TouchableOpacity>
@@ -357,12 +357,12 @@ export function Settings() {
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.contactActionButton, styles.contactCloseButton]}
+                style={styles.contactActionButton}
                 onPress={() => setShowContactModal(false)}
                 activeOpacity={0.8}
               >
                 <View style={styles.contactActionIcon}>
-                  <Text style={styles.contactActionEmoji}>✕</Text>
+                  <Text style={styles.contactActionEmoji}>×</Text>
                 </View>
                 <Text style={styles.contactActionText}>Close</Text>
               </TouchableOpacity>
@@ -689,14 +689,12 @@ const styles = StyleSheet.create({
       elevation: 6,
     }),
   },
-  contactCloseButton: {
-    backgroundColor: Colors.neutral.mediumGray,
-  },
   contactActionIcon: {
     marginBottom: 8,
   },
   contactActionEmoji: {
     fontSize: 20,
+    color: Colors.neutral.white,
   },
   contactActionText: {
     fontSize: 14,
