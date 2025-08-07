@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   Alert,
   Animated,
+  Image,
   Modal,
   Platform,
   ScrollView,
@@ -177,11 +178,23 @@ export function DuroodCounter() {
         {/* App Header */}
         <View style={styles.appHeader}>
           <View style={styles.headerLeft}>
-            <Text style={styles.greeting}>السلام عليكم</Text>
-            <Text style={styles.appTitle}>Durood Counter</Text>
+            <Image 
+              source={require('../assets/images/celebration-logo.png')}
+              style={styles.celebrationLogo}
+              resizeMode="contain"
+            />
+            <View style={styles.headerTextContainer}>
+              
+              <Text style={styles.appTitle}>Durood Counter</Text>
+              <Text style={styles.greeting}>An Initiative by SDI</Text>
+            </View>
           </View>
           <TouchableOpacity style={styles.headerButton} onPress={handleSettingsPress}>
-            <Text style={styles.headerButtonText}>⚙️</Text>
+            <View style={styles.settingsIcon}>
+              <View style={styles.settingsLine} />
+              <View style={styles.settingsLine} />
+              <View style={styles.settingsLine} />
+            </View>
           </TouchableOpacity>
         </View>
 
@@ -264,7 +277,7 @@ export function DuroodCounter() {
               {/* Arabic Text */}
               <View style={styles.arabicContainer}>
                 <Text style={styles.arabicText}>
-                  اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ
+                   اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ
                 </Text>
               </View>
 
@@ -481,12 +494,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingVertical: 10,
     backgroundColor: Colors.primary.darkTeal,
     borderBottomWidth: 1,
     borderBottomColor: Colors.primary.mediumTeal,
   },
   headerLeft: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  celebrationLogo: {
+    width: 60,
+    height: 60,
+    marginRight: 8,
+  },
+  headerTextContainer: {
     flex: 1,
   },
   greeting: {
@@ -510,6 +533,19 @@ const styles = StyleSheet.create({
   },
   headerButtonText: {
     fontSize: 18,
+  },
+  settingsIcon: {
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 3,
+  },
+  settingsLine: {
+    width: 18,
+    height: 2,
+    backgroundColor: Colors.neutral.white,
+    borderRadius: 1,
   },
   // Section Headers
   sectionHeader: {

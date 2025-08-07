@@ -9,7 +9,7 @@ export interface HistoryEntry {
 
 const STORAGE_KEYS = {
   HISTORY: 'duroodHistory',
-  MAX_HISTORY_ENTRIES: 50, // Keep last 50 entries
+  MAX_HISTORY_ENTRIES: 100, // Keep last 100 entries
 };
 
 class HistoryService {

@@ -10,9 +10,11 @@ import {
     View,
 } from 'react-native';
 import { Colors } from '../constants/Colors';
-import { HistoryEntry, historyService } from '../services/historyService';
 import { formatNumber } from '../utils/helpers';
 
+// Import types and service
+import type { HistoryEntry } from '../services/historyService';
+import { historyService } from '../services/historyService';
 interface HistoryModalProps {
   visible: boolean;
   onClose: () => void;
