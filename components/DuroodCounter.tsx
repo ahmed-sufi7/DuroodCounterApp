@@ -1,5 +1,5 @@
-import * as SystemUI from 'expo-system-ui';
 import { router } from 'expo-router';
+import * as SystemUI from 'expo-system-ui';
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -20,6 +20,7 @@ import { Colors } from '../constants/Colors';
 import { useCountdown } from '../hooks/useCountdown';
 import { useDuroodCounter } from '../hooks/useDuroodCounter';
 import { calculateProgress, formatNumber } from '../utils/helpers';
+import { HistoryModal } from './HistoryModal';
 import { IslamicPattern } from './IslamicPattern';
 
 export function DuroodCounter() {
@@ -40,6 +41,7 @@ export function DuroodCounter() {
   const [showBulkModal, setShowBulkModal] = useState(false);
   const [bulkCountInput, setBulkCountInput] = useState('');
   const [isBulkProcessing, setIsBulkProcessing] = useState(false);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
 
   const progress = calculateProgress(globalCount, targetCount);
 
@@ -301,7 +303,7 @@ export function DuroodCounter() {
 
                 <TouchableOpacity
                   style={styles.actionButton}
-                  onPress={() => Alert.alert('History', 'History feature coming soon!')}
+                  onPress={() => setShowHistoryModal(true)}
                   activeOpacity={0.8}
                 >
                   <View style={styles.actionButtonIcon}>
@@ -414,6 +416,12 @@ export function DuroodCounter() {
             </View>
           </View>
         </Modal>
+
+        {/* History Modal */}
+        <HistoryModal
+          visible={showHistoryModal}
+          onClose={() => setShowHistoryModal(false)}
+        />
       </SafeAreaView>
     </View>
   );

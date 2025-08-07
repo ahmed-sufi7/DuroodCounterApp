@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { firebaseService } from '../services/firebaseService';
+import { historyService } from '../services/historyService';
 import { storageService } from '../services/storageService';
 import { TARGET_COUNT } from '../utils/helpers';
 
@@ -72,6 +73,9 @@ export function useDuroodCounter() {
       const newPersonalCount = await storageService.incrementPersonalCount(increment);
       setPersonalCount(newPersonalCount);
 
+      // Add to history
+      await historyService.addHistoryEntry(increment, 'increment');
+
       // Update global count and handle errors properly
       try {
         await firebaseService.incrementGlobalCount(increment);
@@ -101,6 +105,9 @@ export function useDuroodCounter() {
       // Update local count first (fast)
       const newPersonalCount = await storageService.incrementPersonalCount(count);
       setPersonalCount(newPersonalCount);
+
+      // Add to history
+      await historyService.addHistoryEntry(count, 'bulk');
 
       // Update global count and handle errors properly
       try {
