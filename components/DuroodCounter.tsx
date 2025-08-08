@@ -9,7 +9,6 @@ import {
   Dimensions,
   Image,
   ImageBackground,
-  Modal,
   Platform,
   ScrollView,
   StatusBar,
@@ -23,6 +22,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../constants/Colors';
 import { useCountdown } from '../hooks/useCountdown';
 import { useDuroodCounter } from '../hooks/useDuroodCounter';
+import { buildLastNDaysBuckets, computeNiceMax, historyService } from '../services/historyService';
 import { calculateProgress, formatNumber } from '../utils/helpers';
 import { HistoryModal } from './HistoryModal';
 import { IslamicPattern } from './IslamicPattern';
@@ -46,6 +46,9 @@ export function DuroodCounter() {
   const [isBulkProcessing, setIsBulkProcessing] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [showCharityModal, setShowCharityModal] = useState(false);
+  const [daily7, setDaily7] = useState<{ label: string; dateKey: string; value: number }[]>([]);
+  const [maxDaily, setMaxDaily] = useState(0);
+  const [windowKey, setWindowKey] = useState<string | null>(null);
 
   // Get screen dimensions for responsive positioning
   const screenWidth = Dimensions.get('window').width;
@@ -64,6 +67,35 @@ export function DuroodCounter() {
       SystemUI.setBackgroundColorAsync(Colors.primary.darkTeal);
     }
   }, []);
+
+  // Load 7-day personal history for contribution chart
+  useEffect(() => {
+    const loadSevenDay = async () => {
+      try {
+        const history = await historyService.getHistory();
+        const days = buildLastNDaysBuckets(history, 7);
+        // Optimistically include increments reflected in personalCount but not yet in history
+        const historyTotal = history.reduce((sum, h) => sum + h.count, 0);
+        const pendingDelta = Math.max(0, personalCount - historyTotal);
+        if (pendingDelta > 0 && days.length > 0) {
+          const last = days.length - 1;
+          days[last] = { ...days[last], value: days[last].value + pendingDelta };
+        }
+        setDaily7(days);
+        const firstKey = days[0]?.dateKey ?? '';
+        const lastKey = days[days.length - 1]?.dateKey ?? '';
+        const nextWindowKey = `${firstKey}_${lastKey}`;
+        if (windowKey !== nextWindowKey) {
+          setWindowKey(nextWindowKey);
+          setMaxDaily(computeNiceMax(days));
+        }
+      } catch {
+        // noop
+      }
+    };
+    loadSevenDay();
+    // Recompute if personalCount changes or when bucketing window changes
+  }, [personalCount, windowKey]);
 
   const handleSettingsPress = () => {
     router.push('/settings');
@@ -301,6 +333,30 @@ export function DuroodCounter() {
               <View style={styles.contributionBadge}>
                 <Text style={styles.contributionText}>🌟 Keep Going!</Text>
               </View>
+              {/* 7-day chart (same as history) */}
+              <View style={styles.chartCard}>
+                <View style={styles.chartHeader}>
+                  <Ionicons name="analytics-outline" size={18} color={Colors.primary.darkTeal} />
+                  <Text style={styles.chartTitle}>Last 7 Days</Text>
+                </View>
+                <View style={styles.chartBars}>
+                  {daily7.map((d) => {
+                    const niceMax = maxDaily || 1;
+                    const barMaxHeight = 120;
+                    const rawHeight = d.value > 0 ? Math.max(4, Math.round((d.value / niceMax) * barMaxHeight)) : 0;
+                    const height = Math.min(barMaxHeight, rawHeight);
+                    return (
+                      <View key={d.dateKey} style={styles.chartBarItem}>
+                        <View style={styles.chartBarTrack}>
+                          <View style={[styles.chartBarFill, height > 0 ? { height } : { height: 0 }]} />
+                        </View>
+                        <Text style={styles.chartBarValue}>{d.value > 0 ? formatNumber(d.value) : ''}</Text>
+                        <Text style={styles.chartBarLabel}>{d.label}</Text>
+                      </View>
+                    );
+                  })}
+                </View>
+              </View>
             </ImageBackground>
           </View>
 
@@ -408,13 +464,8 @@ export function DuroodCounter() {
           )}
         </ScrollView>
 
-        {/* Bulk Add Modal */}
-        <Modal
-          visible={showBulkModal}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={closeBulkModal}
-        >
+        {/* Bulk Add Overlay */}
+        {showBulkModal && (
           <View style={styles.modalOverlay}>
             <View style={styles.modalContainer}>
               <View style={styles.modalHeader}>
@@ -486,21 +537,17 @@ export function DuroodCounter() {
               </View>
             </View>
           </View>
-        </Modal>
+        )}
 
         {/* History Modal */}
         <HistoryModal
           visible={showHistoryModal}
           onClose={() => setShowHistoryModal(false)}
+          personalCount={personalCount}
         />
 
-        {/* Charity Modal */}
-        <Modal
-          visible={showCharityModal}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={() => setShowCharityModal(false)}
-        >
+        {/* Charity Overlay */}
+        {showCharityModal && (
           <View style={styles.modalOverlay}>
             <View style={styles.charityModalContainer}>
               <View style={styles.modalHeader}>
@@ -540,7 +587,7 @@ export function DuroodCounter() {
               </View>
             </View>
           </View>
-        </Modal>
+        )}
       </SafeAreaView>
     </View>
   );
@@ -844,6 +891,73 @@ const styles = StyleSheet.create({
       elevation: 6,
     }),
   },
+  // Reuse chart styles from HistoryModal for consistency
+  chartCard: {
+    backgroundColor: Colors.neutral.white,
+    borderRadius: 12,
+    padding: 12,
+    width: '100%',
+    marginTop: 8,
+    ...(Platform.OS === 'web' ? {
+      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+    } : {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.06,
+      shadowRadius: 8,
+      elevation: 2,
+    }),
+  },
+  chartHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    gap: 8,
+  },
+  chartTitle: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: Colors.primary.darkTeal,
+  },
+  chartBars: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    gap: 8,
+    height: 180,
+    paddingHorizontal: 4,
+    width: '100%',
+  },
+  chartBarItem: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  chartBarTrack: {
+    width: '60%',
+    height: 140,
+    borderRadius: 8,
+    backgroundColor: Colors.neutral.lightGray,
+    overflow: 'hidden',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  chartBarFill: {
+    width: '100%',
+    backgroundColor: Colors.secondary.warmGold,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+  },
+  chartBarValue: {
+    fontSize: 10,
+    color: Colors.primary.darkTeal,
+    marginTop: 4,
+    minHeight: 14,
+  },
+  chartBarLabel: {
+    fontSize: 11,
+    color: Colors.neutral.darkGray,
+    marginTop: 2,
+  },
   personalStatBackgroundImage: {
     opacity: 0.3,
     transform: [{ scale: 1.25 }],
@@ -873,6 +987,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 4,
+    marginTop: 5,
+    marginBottom: 8,
   },
   contributionText: {
     fontSize: 12,
@@ -1051,11 +1167,16 @@ const styles = StyleSheet.create({
   },
   // Bulk Add Modal Styles
   modalOverlay: {
-    flex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    zIndex: 999,
   },
   modalContainer: {
     backgroundColor: Colors.neutral.white,

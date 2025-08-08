@@ -7,9 +7,15 @@ export interface HistoryEntry {
   timestamp: number;
 }
 
+export interface DayBucket {
+  label: string;
+  dateKey: string;
+  value: number;
+}
+
 const STORAGE_KEYS = {
   HISTORY: 'duroodHistory',
-  MAX_HISTORY_ENTRIES: 100, // Keep last 100 entries
+  MAX_HISTORY_ENTRIES: 10000, // Keep last 10k entries to avoid skewing recent day buckets
 };
 
 class HistoryService {
@@ -170,3 +176,34 @@ class HistoryService {
 }
 
 export const historyService = new HistoryService();
+
+// Helpers for building charts consistently across the app
+export function buildLastNDaysBuckets(history: HistoryEntry[], days: number = 7): DayBucket[] {
+  const today = new Date();
+  const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const formatKey = (d: Date) => `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d
+    .getDate()
+    .toString()
+    .padStart(2, '0')}`;
+  const weekdayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  const buckets: DayBucket[] = [];
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const sod = startOfDay(d);
+    const eod = new Date(sod);
+    eod.setHours(23, 59, 59, 999);
+    const dayTotal = history
+      .filter((h) => h.timestamp >= sod.getTime() && h.timestamp <= eod.getTime())
+      .reduce((sum, h) => sum + h.count, 0);
+    buckets.push({ label: weekdayLabels[d.getDay()], dateKey: formatKey(d), value: dayTotal });
+  }
+  return buckets;
+}
+
+export function computeNiceMax(buckets: DayBucket[]): number {
+  const max = buckets.reduce((m, b) => (b.value > m ? b.value : m), 0);
+  const nice = Math.ceil((max || 1) / 100) * 100;
+  return nice || 1;
+}
