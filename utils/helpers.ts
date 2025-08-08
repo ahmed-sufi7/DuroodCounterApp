@@ -8,14 +8,14 @@ export function calculateProgress(current: number, target: number): number {
   return Math.min((current / target) * 100, 100);
 }
 
-// Calculate countdown to Milad un Nabi 2025 (estimated date: September 2025)
+// Calculate countdown to Milad un Nabi 2025 (estimated date: September 5, 2025)
 export function getCountdownToMilad(): {
   days: number;
   hours: number;
   minutes: number;
   seconds: number;
 } {
-  const miladDate = new Date('2025-09-15T00:00:00Z'); // Estimated date
+  const miladDate = new Date('2025-09-05T00:00:00Z'); // Estimated date
   const now = new Date();
   const diff = miladDate.getTime() - now.getTime();
 
@@ -52,4 +52,4 @@ export function formatCountdown(countdown: {
 }
 
 // Target count constant
-export const TARGET_COUNT = 150000000; // 15 crore 
+export const TARGET_COUNT = 150000000; // 15 crore

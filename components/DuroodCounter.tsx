@@ -8,6 +8,7 @@ import {
   Animated,
   Dimensions,
   Image,
+  ImageBackground,
   Modal,
   Platform,
   ScrollView,
@@ -230,7 +231,7 @@ export function DuroodCounter() {
                     width: logoSize,
                     height: logoSize,
                     left: logoLeft,
-                    top: '50%',
+                    top: '48%',
                     marginTop: -logoSize / 2,
                   }
                 ]}
@@ -288,14 +289,19 @@ export function DuroodCounter() {
               <Text style={styles.sectionHeaderText}>Your Progress</Text>
               <View style={styles.sectionHeaderLine} />
             </View>
-            <View style={styles.personalStatCard}>
+            <ImageBackground
+              source={require('../assets/images/islamic-background.png')}
+              style={styles.personalStatCard}
+              imageStyle={styles.personalStatBackgroundImage}
+              resizeMode={'cover'}
+            >
               <Text style={styles.personalStatTitle}>Your Contribution</Text>
               <Text style={styles.personalStatNumber}>{formatNumber(personalCount)}</Text>
               <Text style={styles.personalStatLabel}>Durood Recited</Text>
               <View style={styles.contributionBadge}>
                 <Text style={styles.contributionText}>🌟 Keep Going!</Text>
               </View>
-            </View>
+            </ImageBackground>
           </View>
 
           {/* Main Counter Section */}
@@ -305,11 +311,22 @@ export function DuroodCounter() {
               <Text style={styles.sectionHeaderText}>Recite Durood</Text>
               <View style={styles.sectionHeaderLine} />
             </View>
-            <View style={styles.mainSection}>
+            <ImageBackground
+              source={require('../assets/images/recitedurood background.png')}
+              style={styles.mainSection}
+              imageStyle={styles.mainSectionBackgroundImage}
+              resizeMode={'cover'}
+            >
+              <View style={styles.mainSectionWhiteOverlay} pointerEvents="none" />
               {/* Arabic Text */}
               <View style={styles.arabicContainer}>
-                <Text style={styles.arabicText}>
-                   اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ
+                <Text
+                  style={styles.arabicText}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit
+                  minimumFontScale={0.75}
+                >
+                   اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ ﷺ
                 </Text>
               </View>
 
@@ -331,6 +348,9 @@ export function DuroodCounter() {
                   </TouchableOpacity>
                 </Animated.View>
                 
+                <Text style={styles.verseText} accessibilityRole="text">
+                  إِنَّ ٱللَّهَ وَمَلَـٰٓئِكَتَهُۥ يُصَلُّونَ عَلَى ٱلنَّبِىِّ ۚ يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوا۟ صَلُّوا۟ عَلَيْهِ وَسَلِّمُوا۟ تَسْلِيمًا
+                </Text>
               </View>
 
               {/* Action Buttons */}
@@ -341,7 +361,7 @@ export function DuroodCounter() {
                   activeOpacity={0.8}
                 >
                   <View style={styles.actionButtonIcon}>
-                    <Text style={styles.actionButtonEmoji}>📝</Text>
+                    <Ionicons name="cloud-upload-outline" size={26} color={Colors.neutral.white} />
                   </View>
                   <Text style={styles.actionButtonText}>Bulk Add</Text>
                 </TouchableOpacity>
@@ -352,7 +372,7 @@ export function DuroodCounter() {
                   activeOpacity={0.8}
                 >
                   <View style={styles.actionButtonIcon}>
-                    <Text style={styles.actionButtonEmoji}>📊</Text>
+                    <Ionicons name="time-outline" size={26} color={Colors.neutral.white} />
                   </View>
                   <Text style={styles.actionButtonText}>History</Text>
                 </TouchableOpacity>
@@ -363,12 +383,23 @@ export function DuroodCounter() {
                   activeOpacity={0.8}
                 >
                   <View style={styles.actionButtonIcon}>
-                    <Text style={styles.actionButtonEmoji}>📤</Text>
+                    <Ionicons name="share-social-outline" size={26} color={Colors.neutral.white} />
                   </View>
                   <Text style={styles.actionButtonText}>Share</Text>
                 </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.actionButton}
+                  onPress={() => Alert.alert('Charity', 'Charity feature coming soon!')}
+                  activeOpacity={0.8}
+                >
+                  <View style={styles.actionButtonIcon}>
+                    <Ionicons name="heart-outline" size={26} color={Colors.neutral.white} />
+                  </View>
+                  <Text style={styles.actionButtonText}>Charity</Text>
+                </TouchableOpacity>
               </View>
-            </View>
+             </ImageBackground>
           </View>
 
           {/* Error Display */}
@@ -651,7 +682,7 @@ const styles = StyleSheet.create({
     // textTransform: 'uppercase',
     letterSpacing: 0.5,
     marginTop: 8,
-    opacity: 0.8,
+    opacity: 0.9,
     
   },
   missionProgress: {
@@ -759,6 +790,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     alignItems: 'center',
+    overflow: 'hidden',
     ...(Platform.OS === 'web' ? {
       boxShadow: '0 3px 10px rgba(0, 0, 0, 0.1)',
     } : {
@@ -768,6 +800,11 @@ const styles = StyleSheet.create({
       shadowRadius: 10,
       elevation: 6,
     }),
+  },
+  personalStatBackgroundImage: {
+    opacity: 0.3,
+    transform: [{ scale: 1.25 }],
+    borderRadius: 16,
   },
   personalStatTitle: {
     fontSize: 14,
@@ -811,9 +848,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, // Changed from 20 to match other sections
     paddingVertical: 32,
     alignItems: 'center',
-    backgroundColor: Colors.neutral.lightGray,
+    backgroundColor: Colors.neutral.white,
     marginHorizontal: 0, // Removed margin since counterSection now handles padding
     marginTop: 0, // Changed from 8 to 0 to bring closer to heading
+    borderRadius: 24,
+    overflow: 'hidden',
+  },
+  mainSectionBackgroundImage: {
+    opacity: 0.6,
+    transform: [{ scale: 1.0 }],
+    borderRadius: 24,
+  },
+  mainSectionWhiteOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(255,255,255,0.25)',
     borderRadius: 24,
   },
   arabicContainer: {
@@ -833,7 +881,7 @@ const styles = StyleSheet.create({
   },
   arabicText: {
     fontSize: 20,
-    fontWeight: '500',
+    fontWeight: '700',
     color: Colors.primary.darkTeal,
     textAlign: 'center',
     lineHeight: 32,
@@ -885,6 +933,14 @@ const styles = StyleSheet.create({
     color: Colors.neutral.darkGray,
     fontStyle: 'italic',
   },
+  verseText: {
+    fontSize: 16,
+    color: Colors.primary.darkTeal,
+    textAlign: 'center',
+    marginTop: 12,
+    lineHeight: 26,
+    fontWeight: '700',
+  },
   // Action Buttons
   actionButtons: {
     flexDirection: 'row',
@@ -900,7 +956,9 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: Colors.neutral.white,
+    backgroundColor: Colors.primary.darkTeal,
+    borderWidth: 1,
+    borderColor: Colors.secondary.warmGold,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,

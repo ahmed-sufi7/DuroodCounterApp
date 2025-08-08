@@ -9,7 +9,7 @@ export function useCountdown() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCountdown(getCountdownToMilad());
-    }, 1000);
+    }, 500);
 
     return () => clearInterval(timer);
   }, []);
@@ -18,4 +18,4 @@ export function useCountdown() {
     countdown,
     formattedCountdown,
   };
-} 
+}
