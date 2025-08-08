@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 14,
     backgroundColor: Colors.primary.darkTeal,
     borderBottomWidth: 1,
     borderBottomColor: Colors.primary.mediumTeal,

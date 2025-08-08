@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import * as SystemUI from 'expo-system-ui';
 import React, { useEffect, useState } from 'react';
@@ -5,6 +6,7 @@ import {
   ActivityIndicator,
   Alert,
   Animated,
+  Dimensions,
   Image,
   Modal,
   Platform,
@@ -43,6 +45,15 @@ export function DuroodCounter() {
   const [bulkCountInput, setBulkCountInput] = useState('');
   const [isBulkProcessing, setIsBulkProcessing] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
+
+  // Get screen dimensions for responsive positioning
+  const screenWidth = Dimensions.get('window').width;
+  const missionCardPadding = 32; // 16px margin on each side
+  const cardWidth = screenWidth - missionCardPadding;
+  
+  // Calculate center position for background logo
+  const logoSize = Math.min(cardWidth * 0.8, 320); // Increased from 60% to 80% of card width, max 320px
+  const logoLeft = (cardWidth - logoSize) / 2;
 
   const progress = calculateProgress(globalCount, targetCount);
 
@@ -190,11 +201,11 @@ export function DuroodCounter() {
             </View>
           </View>
           <TouchableOpacity style={styles.headerButton} onPress={handleSettingsPress}>
-            <View style={styles.settingsIcon}>
-              <View style={styles.settingsLine} />
-              <View style={styles.settingsLine} />
-              <View style={styles.settingsLine} />
-            </View>
+            <Ionicons 
+              name="settings-outline" 
+              size={24} 
+              color={Colors.neutral.white} 
+            />
           </TouchableOpacity>
         </View>
 
@@ -211,9 +222,26 @@ export function DuroodCounter() {
               <View style={styles.sectionHeaderLine} />
             </View>
             <View style={styles.missionCard}>
+              <Image 
+                source={require('../assets/images/sdi logo arabic.png')}
+                style={[
+                  styles.missionBackgroundLogo,
+                  {
+                    width: logoSize,
+                    height: logoSize,
+                    left: logoLeft,
+                    top: '50%',
+                    marginTop: -logoSize / 2,
+                  }
+                ]}
+                resizeMode="contain"
+              />
               <View style={styles.missionHeader}>
-                <Text style={styles.missionTitle}>🎯 Global Mission</Text>
+                <Text style={styles.missionTitle}>Global Mission</Text>
                 <Text style={styles.missionGoal}>15 Crore Durood for Milad un Nabi ﷺ</Text>
+                <Text style={styles.missionInitiative}>
+                  An Initiative by SDI for the celebration of 1500th Milad un Nabi ﷺ
+                </Text>
               </View>
               
               <View style={styles.missionProgress}>
@@ -239,7 +267,11 @@ export function DuroodCounter() {
 
               <View style={styles.timerSection}>
                 <View style={styles.timerIcon}>
-                  <Text style={styles.timerEmoji}>⏰</Text>
+                  <Ionicons 
+                    name="time-outline" 
+                    size={24} 
+                    color={Colors.primary.darkTeal} 
+                  />
                 </View>
                 <View style={styles.timerContent}>
                   <Text style={styles.timerLabel}>Time to Milad un Nabi ﷺ</Text>
@@ -534,19 +566,6 @@ const styles = StyleSheet.create({
   headerButtonText: {
     fontSize: 18,
   },
-  settingsIcon: {
-    width: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 3,
-  },
-  settingsLine: {
-    width: 18,
-    height: 2,
-    backgroundColor: Colors.neutral.white,
-    borderRadius: 1,
-  },
   // Section Headers
   sectionHeader: {
     flexDirection: 'row',
@@ -578,6 +597,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.neutral.white,
     borderRadius: 20,
     padding: 24,
+    position: 'relative',
+    overflow: 'hidden',
     ...(Platform.OS === 'web' ? {
       boxShadow: '0 6px 16px rgba(0, 0, 0, 0.15)',
     } : {
@@ -588,28 +609,55 @@ const styles = StyleSheet.create({
       elevation: 10,
     }),
   },
+  missionBackgroundLogo: {
+    position: 'absolute',
+    opacity: 0.08,
+    zIndex: 0,
+  },
   missionHeader: {
     alignItems: 'center',
     marginBottom: 24,
     paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.neutral.lightGray,
+    borderBottomWidth: 2,
+    borderBottomColor: 'rgba(45, 74, 74, 0.3)', // Colors.primary.darkTeal with 0.3 opacity
+    position: 'relative',
+    zIndex: 1,
   },
   missionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 14,
+    fontWeight: '600',
     color: Colors.primary.darkTeal,
-    marginBottom: 4,
+    marginBottom: 8,
     textAlign: 'center',
   },
   missionGoal: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: '700',
     color: Colors.secondary.warmGold,
     textAlign: 'center',
+    lineHeight: 25,
+    letterSpacing: 0.3,
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
+    textShadowColor: 'rgba(0, 0, 0, 0.12)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+    marginVertical: 5,
+  },
+  missionInitiative: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: Colors.neutral.darkGray,
+    textAlign: 'center',
+    // textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginTop: 8,
+    opacity: 0.8,
+    
   },
   missionProgress: {
     marginBottom: 20,
+    position: 'relative',
+    zIndex: 1,
   },
   progressStats: {
     flexDirection: 'row',
@@ -631,9 +679,10 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   progressDivider: {
-    width: 1,
-    backgroundColor: Colors.neutral.lightGray,
+    width: 2,
+    backgroundColor: Colors.primary.darkTeal,
     marginHorizontal: 16,
+    opacity: 0.3,
   },
   progressBarContainer: {
     alignItems: 'center',
@@ -641,10 +690,11 @@ const styles = StyleSheet.create({
   progressBar: {
     width: '100%',
     height: 8,
-    backgroundColor: Colors.neutral.lightGray,
+    backgroundColor: Colors.primary.darkTeal,
     borderRadius: 4,
     overflow: 'hidden',
-    marginBottom: 8,
+    marginBottom: 12,
+    opacity: 0.2,
   },
   progressBarFill: {
     height: '100%',
@@ -662,8 +712,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary.darkTeal,
     borderRadius: 16,
     padding: 16,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: Colors.secondary.warmGold,
+    position: 'relative',
+    zIndex: 1,
+    marginTop: 16,
+    
   },
   timerIcon: {
     width: 48,
@@ -673,9 +727,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
-  },
-  timerEmoji: {
-    fontSize: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   timerContent: {
     flex: 1,
