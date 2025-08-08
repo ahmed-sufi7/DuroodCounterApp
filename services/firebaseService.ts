@@ -14,6 +14,15 @@ export interface UserCount {
 class FirebaseService {
   private globalCountRef = ref(database, 'globalCount');
   private lastUpdatedRef = ref(database, 'lastUpdated');
+  private dailyCountsRef = ref(database, 'dailyCounts');
+
+  private getUTCDateKey(nowMs?: number): string {
+    const d = nowMs ? new Date(nowMs) : new Date();
+    const y = d.getUTCFullYear();
+    const m = (d.getUTCMonth() + 1).toString().padStart(2, '0');
+    const day = d.getUTCDate().toString().padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
 
   // Test database connection
   async testConnection(): Promise<boolean> {
@@ -88,6 +97,38 @@ class FirebaseService {
       console.error('❌ Error incrementing global count (transaction):', error);
       throw error; // Re-throw to let caller handle
     }
+  }
+
+  // Increment today's UTC daily bucket
+  async incrementDailyCount(increment: number = 1, nowMs?: number): Promise<void> {
+    const key = this.getUTCDateKey(nowMs);
+    const bucketRef = ref(database, `dailyCounts/${key}`);
+    await runTransaction(bucketRef, (current) => {
+      const currentVal = typeof current === 'number' && !isNaN(current) ? current : 0;
+      return currentVal + increment;
+    }, { applyLocally: false });
+  }
+
+  // Increment both global and today's daily bucket
+  async incrementGlobalAndDailyCount(increment: number = 1): Promise<void> {
+    await this.incrementGlobalCount(increment);
+    try {
+      await this.incrementDailyCount(increment);
+    } catch (e) {
+      // If daily increment fails, we keep global consistent and log the error
+      console.warn('Failed to increment daily bucket:', e);
+    }
+  }
+
+  // Subscribe to daily counts map (all days). Caller can slice last N days.
+  subscribeToDailyCounts(callback: (map: Record<string, number>) => void): () => void {
+    const unsubscribe = onValue(this.dailyCountsRef, (snapshot) => {
+      const map = snapshot.val() || {};
+      callback(map);
+    }, (error) => {
+      console.error('❌ Error in daily counts subscription:', error);
+    });
+    return unsubscribe;
   }
 
   // Initialize database with default values if needed

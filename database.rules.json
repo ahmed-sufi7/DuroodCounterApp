@@ -8,6 +8,13 @@
       ".read": true,
       ".write": true
     },
+    "dailyCounts": {
+      ".read": true,
+      "$date": {
+        ".write": "newData.isNumber() && newData.val() >= 0",
+        ".validate": "newData.isNumber() && newData.val() >= 0"
+      }
+    },
     ".read": false,
     ".write": false
   }

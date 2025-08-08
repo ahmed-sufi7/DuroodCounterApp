@@ -19,9 +19,12 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Svg, { Circle, Defs, Line, Path, Rect, Stop, LinearGradient as SvgLinearGradient, Text as SvgText } from 'react-native-svg';
 import { Colors } from '../constants/Colors';
 import { useCountdown } from '../hooks/useCountdown';
 import { useDuroodCounter } from '../hooks/useDuroodCounter';
+import { firebaseService } from '../services/firebaseService';
+import { computeNiceMax125 } from '../services/globalStatsService';
 import { buildLastNDaysBuckets, computeNiceMax, historyService } from '../services/historyService';
 import { calculateProgress, formatNumber } from '../utils/helpers';
 import { HistoryModal } from './HistoryModal';
@@ -49,6 +52,8 @@ export function DuroodCounter() {
   const [daily7, setDaily7] = useState<{ label: string; dateKey: string; value: number }[]>([]);
   const [maxDaily, setMaxDaily] = useState(0);
   const [windowKey, setWindowKey] = useState<string | null>(null);
+  const [globalBuckets, setGlobalBuckets] = useState<{ label: string; dateKey: string; value: number }[]>([]);
+  const [globalMax, setGlobalMax] = useState(1);
 
   // Get screen dimensions for responsive positioning
   const screenWidth = Dimensions.get('window').width;
@@ -96,6 +101,27 @@ export function DuroodCounter() {
     loadSevenDay();
     // Recompute if personalCount changes or when bucketing window changes
   }, [personalCount, windowKey]);
+
+  // Subscribe to realtime dailyCounts from Firebase for accurate per-day global graph
+  useEffect(() => {
+    const unsubscribe = firebaseService.subscribeToDailyCounts((map) => {
+      const today = new Date();
+      const out: { label: string; dateKey: string; value: number }[] = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(today.getDate() - i);
+        const y = d.getUTCFullYear();
+        const m = (d.getUTCMonth() + 1).toString().padStart(2, '0');
+        const day = d.getUTCDate().toString().padStart(2, '0');
+        const key = `${y}-${m}-${day}`;
+        const label = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()];
+        out.push({ label, dateKey: key, value: map[key] || 0 });
+      }
+      setGlobalBuckets(out);
+      setGlobalMax(computeNiceMax125(out.map((b) => b.value)) || 1);
+    });
+    return unsubscribe;
+  }, []);
 
   const handleSettingsPress = () => {
     router.push('/settings');
@@ -263,18 +289,23 @@ export function DuroodCounter() {
                     width: logoSize,
                     height: logoSize,
                     left: logoLeft,
-                    top: '48%',
+                    top: '28%',
                     marginTop: -logoSize / 2,
                   }
                 ]}
                 resizeMode="contain"
               />
               <View style={styles.missionHeader}>
-                <Text style={styles.missionTitle}>Global Mission</Text>
+                <View style={styles.missionHeaderTop}>
+                  <Text style={styles.missionTitle}>Global Mission</Text>
+                </View>
                 <Text style={styles.missionGoal}>15 Crore Durood for Milad un Nabi ﷺ</Text>
-                <Text style={styles.missionInitiative}>
-                  An Initiative by SDI for the celebration of 1500th Milad un Nabi ﷺ
-                </Text>
+                <View style={styles.missionGoalAccent} />
+                <View style={styles.missionInitiativePill}>
+                  <Text style={styles.missionInitiativeText}>
+                    An Initiative by SDI for the celebration of 1500th Milad un Nabi ﷺ
+                  </Text>
+                </View>
               </View>
 
               <View style={styles.missionProgress}>
@@ -298,20 +329,32 @@ export function DuroodCounter() {
                 </View>
               </View>
 
-              <View style={styles.timerSection}>
-                <View style={styles.timerIcon}>
-                  <Ionicons
-                    name="time-outline"
-                    size={24}
-                    color={Colors.primary.darkTeal}
-                  />
+              <View style={styles.timerCard}>
+                <View style={styles.timerHeaderRow}>
+                  <View style={styles.timerBadge}>
+                    <Ionicons name="time-outline" size={16} color={Colors.neutral.white} />
+                  </View>
+                  <Text style={styles.timerTitle}>Time to Milad un Nabi ﷺ</Text>
                 </View>
-                <View style={styles.timerContent}>
-                  <Text style={styles.timerLabel}>Time to Milad un Nabi ﷺ</Text>
-                  <Text style={styles.timerValue}>{formattedCountdown}</Text>
+                <View style={styles.timerGrid}>
+                  {formattedCountdown.split(':').map((seg, idx) => (
+                    <View key={idx} style={styles.timerCell}>
+                      <Text style={styles.timerNumber}>{seg}</Text>
+                      <Text style={styles.timerUnit}>{['Days', 'Hours', 'Minutes', 'Seconds'][idx]}</Text>
+                    </View>
+                  ))}
                 </View>
               </View>
+              {/* Global 7-day Graph (inside mission card) */}
+              <View style={styles.globalChartCard}>
+                <View style={styles.chartHeader}>
+                  <Ionicons name="earth-outline" size={18} color={Colors.primary.darkTeal} />
+                  <Text style={styles.chartTitle}>Global (Last 7 Days)</Text>
+                </View>
+                <GlobalLineChart buckets={globalBuckets} maxValue={globalMax} />
+              </View>
             </View>
+            {/* Close missionSection */}
           </View>
 
           {/* Personal Stats */}
@@ -464,6 +507,7 @@ export function DuroodCounter() {
           )}
         </ScrollView>
 
+
         {/* Bulk Add Overlay */}
         {showBulkModal && (
           <View style={styles.modalOverlay}>
@@ -592,6 +636,209 @@ export function DuroodCounter() {
     </View>
   );
 }
+
+interface GlobalLineChartProps {
+  buckets: { label: string; dateKey: string; value: number }[];
+  maxValue: number;
+}
+
+const GlobalLineChart = React.memo(function GlobalLineChart({ buckets, maxValue }: GlobalLineChartProps) {
+  const [containerWidth, setContainerWidth] = React.useState<number>(0);
+  const height = 190;
+  const padding = 8; // right padding
+  const paddingLeft = 4; // small left padding
+  const leftAxis = 24; // y labels width
+  const bottomLabelSpace = 22; // space reserved for x labels
+  const width = Math.max(0, containerWidth);
+  const plotLeft = paddingLeft + leftAxis;
+  const innerW = Math.max(0, width - padding - plotLeft);
+  const innerH = Math.max(0, height - padding * 2 - bottomLabelSpace);
+
+  const max = Math.max(1, maxValue);
+  const n = buckets.length;
+  const stepX = React.useMemo(() => (n > 1 ? innerW / (n - 1) : 0), [n, innerW]);
+
+  const points = React.useMemo(() => {
+    return buckets.map((b, i) => {
+      const x = plotLeft + (n > 1 ? i * stepX : innerW / 2);
+      const y = padding + (1 - Math.min(1, b.value / max)) * innerH;
+      return { x, y, v: b.value, label: b.label, key: b.dateKey };
+    });
+  }, [buckets, n, stepX, innerH, max, plotLeft, innerW]);
+
+  // Smooth path using a simple Catmull-Rom to Bezier conversion
+  const pathD = React.useMemo(() => {
+    if (points.length === 0) return '';
+    if (points.length === 1) return `M ${points[0].x} ${points[0].y}`;
+    const d: string[] = [];
+    d.push(`M ${points[0].x} ${points[0].y}`);
+    for (let i = 0; i < points.length - 1; i++) {
+      const p0 = points[i - 1] || points[i];
+      const p1 = points[i];
+      const p2 = points[i + 1];
+      const p3 = points[i + 2] || p2;
+      const smooth = 0.2;
+      const cp1x = p1.x + (p2.x - p0.x) * smooth;
+      const cp1y = p1.y + (p2.y - p0.y) * smooth;
+      const cp2x = p2.x - (p3.x - p1.x) * smooth;
+      const cp2y = p2.y - (p3.y - p1.y) * smooth;
+      d.push(`C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`);
+    }
+    return d.join(' ');
+  }, [points]);
+
+  // Y-axis ticks (0, 1/3, 2/3, max)
+  const t1 = Math.round(max / 3);
+  const t2 = Math.round((2 * max) / 3);
+  const yTicks = [0, t1, t2, max];
+
+  const [hoverIdx, setHoverIdx] = React.useState<number | null>(null);
+  const rafRef = React.useRef<number | null>(null);
+  const lastXRef = React.useRef<number>(0);
+  const handlePointFromX = React.useCallback((x: number) => {
+    if (n === 0) return null;
+    const relX = Math.max(plotLeft, Math.min(plotLeft + innerW, x));
+    const idx = n > 1 ? Math.round((relX - plotLeft) / stepX) : 0;
+    return Math.max(0, Math.min(n - 1, idx));
+  }, [n, innerW, stepX, plotLeft]);
+
+  const scheduleUpdate = React.useCallback(() => {
+    if (rafRef.current != null) return;
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = null;
+      const idx = handlePointFromX(lastXRef.current);
+      if (idx !== null && idx !== hoverIdx) setHoverIdx(idx);
+    });
+  }, [handlePointFromX, hoverIdx]);
+
+  const onMove = (evt: any) => {
+    const { locationX } = evt.nativeEvent || {};
+    lastXRef.current = locationX || 0;
+    scheduleUpdate();
+  };
+  const onLeave = () => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    rafRef.current = null;
+    setHoverIdx(null);
+  };
+
+  return (
+    <View style={styles.globalLineChartContainer} onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}>
+      <Svg width={width} height={height}>
+        <Defs>
+          <SvgLinearGradient id="glow" x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0%" stopColor={Colors.secondary.warmGold} stopOpacity="0.4" />
+            <Stop offset="100%" stopColor={Colors.secondary.warmGold} stopOpacity="0" />
+          </SvgLinearGradient>
+          <SvgLinearGradient id="strokeGrad" x1="0" y1="0" x2="1" y2="0">
+            <Stop offset="0%" stopColor={Colors.secondary.warmGold} />
+            <Stop offset="100%" stopColor={Colors.primary.darkTeal} />
+          </SvgLinearGradient>
+        </Defs>
+        {/* Grid and Y-axis labels */}
+        <Rect x={plotLeft} y={padding} width={innerW} height={innerH} rx={8} fill={Platform.OS === 'web' ? 'rgba(0,0,0,0.03)' : 'transparent'} />
+        {yTicks.map((t, i) => {
+          const y = padding + (1 - Math.min(1, t / max)) * innerH;
+          return (
+            <>
+              <Line key={`gl-${i}`} x1={plotLeft} y1={y} x2={plotLeft + innerW} y2={y} stroke={Colors.primary.darkTeal} strokeOpacity={0.06} strokeWidth={1} />
+              <SvgText key={`gt-${i}`} x={paddingLeft + 2} y={y + 4} fill={Colors.neutral.darkGray} fontSize={10}>
+                {formatNumber(t)}
+              </SvgText>
+            </>
+          );
+        })}
+        {points.length > 1 && (
+          <Path
+            d={`${pathD} L ${plotLeft + innerW} ${padding + innerH} L ${plotLeft} ${padding + innerH} Z`}
+            fill="url(#glow)"
+          />
+        )}
+        {/* Line with gradient stroke and shadow */}
+        <Path d={pathD} stroke={Colors.primary.darkTeal} strokeOpacity={0.08} strokeWidth={6} fill="none" />
+        <Path d={pathD} stroke="url(#strokeGrad)" strokeWidth={2.5} fill="none" />
+        {points.map((p) => (
+          <>
+            <Circle key={`h-${p.key}`} cx={p.x} cy={p.y} r={6} fill={Colors.neutral.white} fillOpacity={0.8} />
+            <Circle key={`d-${p.key}`} cx={p.x} cy={p.y} r={3} fill={Colors.secondary.warmGold} />
+          </>
+        ))}
+        {/* Interaction overlay for mouse/touch */}
+        <Rect
+          x={plotLeft}
+          y={padding}
+          width={innerW}
+          height={innerH}
+          fill="transparent"
+          {...({ onMouseMove: onMove, onMouseLeave: onLeave } as any)}
+          onStartShouldSetResponder={() => true}
+          onResponderGrant={onMove}
+          onResponderMove={onMove}
+          onResponderRelease={onLeave}
+        />
+        {hoverIdx !== null && points[hoverIdx] && (
+          <>
+            <Line
+              x1={points[hoverIdx].x}
+              y1={padding}
+              x2={points[hoverIdx].x}
+              y2={padding + innerH}
+              stroke={Colors.primary.darkTeal}
+              strokeOpacity={0.25}
+              strokeWidth={1}
+            />
+            <Circle cx={points[hoverIdx].x} cy={points[hoverIdx].y} r={5} fill={Colors.secondary.warmGold} />
+            {(() => {
+              const p = points[hoverIdx];
+              const valueText = `${formatNumber(p.v)}`;
+              const bubbleW = Math.max(60, valueText.length * 9);
+              const bubbleH = 28;
+              const bx = Math.max(plotLeft, Math.min(p.x - bubbleW / 2, plotLeft + innerW - bubbleW));
+              const by = Math.max(padding, p.y - bubbleH - 10);
+              return (
+                <>
+                  <Rect x={bx} y={by} width={bubbleW} height={bubbleH} rx={6} fill={Colors.primary.darkTeal} />
+                  <SvgText
+                    x={bx + bubbleW / 2}
+                    y={by + bubbleH / 2 + 4}
+                    fill={Colors.neutral.white}
+                    fontSize={12}
+                    fontWeight="bold"
+                    textAnchor="middle"
+                  >
+                    {valueText}
+                  </SvgText>
+                </>
+              );
+            })()}
+          </>
+        )}
+        {/* X-axis day labels centered under points */}
+        {points.map((p) => (
+          <SvgText
+            key={`lbl-${p.key}`}
+            x={p.x}
+            y={height - padding - 6}
+            fill={Colors.neutral.darkGray}
+            fontSize={10}
+            textAnchor="middle"
+          >
+            {p.label}
+          </SvgText>
+        ))}
+      </Svg>
+    </View>
+  );
+}, (prev, next) => {
+  if (prev.maxValue !== next.maxValue) return false;
+  if (prev.buckets.length !== next.buckets.length) return false;
+  for (let i = 0; i < prev.buckets.length; i++) {
+    const a = prev.buckets[i];
+    const b = next.buckets[i];
+    if (a.dateKey !== b.dateKey || a.value !== b.value) return false;
+  }
+  return true;
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -744,25 +991,34 @@ const styles = StyleSheet.create({
     position: 'relative',
     zIndex: 1,
   },
-  missionTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.primary.darkTeal,
+  missionHeaderTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 8,
-    textAlign: 'center',
+  },
+  missionTitle: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: Colors.primary.darkTeal,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
   },
   missionGoal: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: Colors.secondary.warmGold,
+    fontSize: 22,
+    fontWeight: '800',
+    color: Colors.primary.darkTeal,
     textAlign: 'center',
-    lineHeight: 25,
-    letterSpacing: 0.3,
-    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
-    textShadowColor: 'rgba(0, 0, 0, 0.12)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
-    marginVertical: 5,
+    lineHeight: 28,
+    letterSpacing: 0.2,
+    marginTop: 4,
+  },
+  missionGoalAccent: {
+    width: 64,
+    height: 3,
+    borderRadius: 2,
+    backgroundColor: Colors.secondary.warmGold,
+    marginTop: 6,
+    marginBottom: 10,
   },
   missionInitiative: {
     fontSize: 12,
@@ -774,6 +1030,18 @@ const styles = StyleSheet.create({
     marginTop: 8,
     opacity: 0.9,
 
+  },
+  missionInitiativePill: {
+    backgroundColor: Colors.neutral.lightGray,
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginTop: 4,
+  },
+  missionInitiativeText: {
+    fontSize: 11,
+    color: Colors.primary.darkTeal,
+    textAlign: 'center',
   },
   missionProgress: {
     marginBottom: 20,
@@ -869,6 +1137,68 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.secondary.warmGold,
   },
+  // New timer card styles
+  timerCard: {
+    backgroundColor: Colors.neutral.white,
+    borderRadius: 16,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: Colors.neutral.lightGray,
+    ...(Platform.OS === 'web' ? {
+      boxShadow: '0 2px 10px rgba(0,0,0,0.06)'
+    } : {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.06,
+      shadowRadius: 10,
+      elevation: 3,
+    }),
+  },
+  timerHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  timerBadge: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: Colors.primary.darkTeal,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 8,
+  },
+  timerTitle: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: Colors.primary.darkTeal,
+    textTransform: 'uppercase',
+    letterSpacing: 0.6,
+  },
+  timerGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  timerCell: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 6,
+    marginHorizontal: 4,
+    backgroundColor: Colors.neutral.lightGray,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: Colors.neutral.lightGray,
+  },
+  timerNumber: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: Colors.primary.darkTeal,
+  },
+  timerUnit: {
+    marginTop: 2,
+    fontSize: 10,
+    color: Colors.neutral.darkGray,
+  },
   // Personal Stats Section
   personalStatsSection: {
     paddingHorizontal: 16,
@@ -957,6 +1287,53 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: Colors.neutral.darkGray,
     marginTop: 2,
+  },
+  // Global chart styles (reuse, slightly larger)
+  globalChartCard: {
+    backgroundColor: Colors.neutral.white,
+    borderRadius: 12,
+    padding: 12,
+    marginTop: 26,
+    ...(Platform.OS === 'web' ? {
+      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+    } : {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.06,
+      shadowRadius: 8,
+      elevation: 2,
+    }),
+  },
+  globalLineChartContainer: {
+    width: '100%',
+  },
+  globalChartBars: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    gap: 8,
+    height: 180,
+    paddingHorizontal: 4,
+    width: '100%',
+  },
+  globalLineLabelsRow: {
+  },
+  globalLineLabelCell: {
+  },
+  globalChartBarTrack: {
+    width: '60%',
+    height: 140,
+    borderRadius: 8,
+    backgroundColor: Colors.neutral.lightGray,
+    overflow: 'hidden',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  globalChartBarFill: {
+    width: '100%',
+    backgroundColor: Colors.primary.darkTeal,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
   },
   personalStatBackgroundImage: {
     opacity: 0.3,

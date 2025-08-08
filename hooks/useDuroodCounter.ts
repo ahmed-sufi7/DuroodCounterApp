@@ -59,7 +59,7 @@ export function useDuroodCounter() {
     setPendingIncrements(0);
     storageService.savePendingIncrements(0).catch(() => {});
     try {
-      await firebaseService.incrementGlobalCount(toFlush);
+      await firebaseService.incrementGlobalAndDailyCount(toFlush);
     } catch (err) {
       console.warn('Background sync failed, re-queueing increments:', err);
       // Re-queue to try again later
@@ -114,7 +114,7 @@ export function useDuroodCounter() {
       });
 
       // Try immediate global increment in background
-      firebaseService.incrementGlobalCount(increment).catch(() => {
+      firebaseService.incrementGlobalAndDailyCount(increment).catch(() => {
         // Fallback: queue if immediate attempt fails
         setPendingIncrements((v) => {
           const next = v + increment;
@@ -147,7 +147,7 @@ export function useDuroodCounter() {
 
       // Update global count and handle errors properly
       try {
-        await firebaseService.incrementGlobalCount(count);
+        await firebaseService.incrementGlobalAndDailyCount(count);
         console.log('✅ Global count updated successfully');
       } catch (err) {
         console.error('❌ Firebase update failed:', err);
