@@ -2,7 +2,7 @@
   "rules": {
     "globalCount": {
       ".read": true,
-      ".write": true
+      ".write": "newData.isNumber() && newData.val() >= 0"
     },
     "lastUpdated": {
       ".read": true,

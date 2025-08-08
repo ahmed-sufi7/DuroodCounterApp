@@ -10,6 +10,7 @@ export function useDuroodCounter() {
   const [isLoading, setIsLoading] = useState(true);
   const [isIncrementing, setIsIncrementing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [pendingIncrements, setPendingIncrements] = useState(0);
 
   // Load initial data
   useEffect(() => {
@@ -17,23 +18,7 @@ export function useDuroodCounter() {
   }, []);
 
   // Subscribe to global count changes
-  useEffect(() => {
-    let unsubscribe: (() => void) | undefined;
-    
-    try {
-      unsubscribe = firebaseService.subscribeToGlobalCount((count) => {
-        setGlobalCount(count);
-      });
-    } catch (error) {
-      console.warn('Failed to subscribe to Firebase updates:', error);
-    }
-
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
-  }, []);
+  // Note: this effect depends on flushIncrements, so it must be declared after flushIncrements.
 
   const loadInitialData = async () => {
     try {
@@ -46,6 +31,10 @@ export function useDuroodCounter() {
 
       // Set loading to false immediately after personal count loads
       setIsLoading(false);
+
+      // Restore any queued increments (survive app restarts)
+      const queued = await storageService.getPendingIncrements();
+      if (queued > 0) setPendingIncrements(queued);
 
       // Initialize Firebase database and load global count in background
       try {
@@ -64,31 +53,78 @@ export function useDuroodCounter() {
     }
   };
 
+  const flushIncrements = useCallback(async () => {
+    if (pendingIncrements <= 0) return;
+    const toFlush = pendingIncrements;
+    setPendingIncrements(0);
+    storageService.savePendingIncrements(0).catch(() => {});
+    try {
+      await firebaseService.incrementGlobalCount(toFlush);
+    } catch (err) {
+      console.warn('Background sync failed, re-queueing increments:', err);
+      // Re-queue to try again later
+      setPendingIncrements((v) => {
+        const next = v + toFlush;
+        storageService.savePendingIncrements(next).catch(() => {});
+        return next;
+      });
+    }
+  }, [pendingIncrements]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      flushIncrements();
+    }, 2000); // try every 2s
+    return () => clearInterval(interval);
+  }, [flushIncrements]);
+
+  // Subscribe to global updates and periodically flush queued increments
+  useEffect(() => {
+    let unsubscribe: (() => void) | undefined;
+    try {
+      unsubscribe = firebaseService.subscribeToGlobalCount((count) => {
+        setGlobalCount(count);
+      });
+    } catch (error) {
+      console.warn('Failed to subscribe to Firebase updates:', error);
+    }
+
+    const flushInterval = setInterval(() => {
+      flushIncrements();
+    }, 5000);
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+      clearInterval(flushInterval);
+    };
+  }, [flushIncrements]);
+
   const incrementCount = useCallback(async (increment: number = 1) => {
     try {
-      setIsIncrementing(true);
+      // Optimistic local update: never blocks UI
       setError(null);
+      setPersonalCount((prev) => prev + increment);
 
-      // Update local count first (fast)
-      const newPersonalCount = await storageService.incrementPersonalCount(increment);
-      setPersonalCount(newPersonalCount);
+      // Persist in background (fire-and-forget)
+      storageService.incrementPersonalCount(increment).catch((err) => {
+        console.warn('Failed to persist personal count increment:', err);
+      });
+      historyService.addHistoryEntry(increment, 'increment').catch((err) => {
+        console.warn('Failed to write history entry:', err);
+      });
 
-      // Add to history
-      await historyService.addHistoryEntry(increment, 'increment');
-
-      // Update global count and handle errors properly
-      try {
-        await firebaseService.incrementGlobalCount(increment);
-        console.log('✅ Global count updated successfully');
-      } catch (err) {
-        console.error('❌ Firebase update failed:', err);
-        setError('Failed to sync with global count. Your personal count is saved.');
-      }
+      // Try immediate global increment in background
+      firebaseService.incrementGlobalCount(increment).catch(() => {
+        // Fallback: queue if immediate attempt fails
+        setPendingIncrements((v) => {
+          const next = v + increment;
+          storageService.savePendingIncrements(next).catch(() => {});
+          return next;
+        });
+      });
     } catch (err) {
       setError('Failed to increment count');
       console.error('Error incrementing count:', err);
-    } finally {
-      setIsIncrementing(false);
     }
   }, []);
 

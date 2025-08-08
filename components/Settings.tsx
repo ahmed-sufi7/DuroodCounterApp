@@ -1,16 +1,17 @@
+import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    Alert,
-    Linking,
-    Modal,
-    Platform,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  Linking,
+  Modal,
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from '../constants/Colors';
@@ -18,22 +19,22 @@ import { IslamicPattern } from './IslamicPattern';
 interface SettingsItemProps {
   title: string;
   subtitle?: string;
-  icon: string;
+  icon: string; // Ionicons name
   onPress: () => void;
   showArrow?: boolean;
 }
 
-const SettingsItem: React.FC<SettingsItemProps> = ({ 
-  title, 
-  subtitle, 
-  icon, 
-  onPress, 
-  showArrow = true 
+const SettingsItem: React.FC<SettingsItemProps> = ({
+  title,
+  subtitle,
+  icon,
+  onPress,
+  showArrow = true
 }) => (
   <TouchableOpacity style={styles.settingsItem} onPress={onPress} activeOpacity={0.7}>
     <View style={styles.settingsItemContent}>
       <View style={styles.settingsItemIcon}>
-        <Text style={styles.settingsItemEmoji}>{icon}</Text>
+        <Ionicons name={icon as any} size={20} color={Colors.secondary.warmGold} />
       </View>
       <View style={styles.settingsItemText}>
         <Text style={styles.settingsItemTitle}>{title}</Text>
@@ -42,7 +43,7 @@ const SettingsItem: React.FC<SettingsItemProps> = ({
     </View>
     {showArrow && (
       <View style={styles.settingsItemArrow}>
-        <Text style={styles.arrowText}>›</Text>
+        <Ionicons name="chevron-forward" size={20} color={Colors.neutral.mediumGray} />
       </View>
     )}
   </TouchableOpacity>
@@ -75,7 +76,7 @@ export function Settings() {
       android: 'https://play.google.com/store/apps/details?id=com.duroodcounter.app',
       default: 'https://play.google.com/store/apps/details?id=com.duroodcounter.app'
     });
-    
+
     Linking.openURL(storeUrl).catch(() => {
       Alert.alert('Error', 'Unable to open store. Please rate us manually in your app store.');
     });
@@ -101,7 +102,7 @@ export function Settings() {
       const subject = 'Durood Counter App - Feedback';
       const body = 'As-salamu alaykum Mohammed Ahmed Raza Sufi,\n\nI would like to share my feedback about the Durood Counter app:\n\n';
       const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      
+
       Linking.openURL(mailtoUrl).catch(() => {
         Alert.alert('Email', 'Please email us at: pixelwebstudio7@gmail.com');
       });
@@ -112,15 +113,15 @@ export function Settings() {
     const email = 'pixelwebstudio7@gmail.com';
     const subject = 'Durood Counter App - Bug Report';
     const body = 'As-salamu alaykum,\n\nI found a bug in the Durood Counter app:\n\nBug Description:\n\nSteps to Reproduce:\n1. \n2. \n3. \n\nExpected Behavior:\n\nActual Behavior:\n\nDevice Information:\n- Device: \n- OS Version: \n- App Version: 1.0.0\n\n';
-    
+
     const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    
+
     Linking.openURL(mailtoUrl).catch(() => {
       Alert.alert(
         'Report Bug',
         `Please email us at: ${email}`,
         [
-          { text: 'Copy Email', onPress: () => {/* Copy to clipboard logic */} },
+          { text: 'Copy Email', onPress: () => {/* Copy to clipboard logic */ } },
           { text: 'OK' }
         ]
       );
@@ -129,25 +130,77 @@ export function Settings() {
 
   const handleAboutDurood = () => {
     Alert.alert(
-      '🤲 About Durood Sharif',
-      'Durood Sharif is a form of prayer and blessing upon Prophet Muhammad ﷺ. It is one of the most beloved acts of worship in Islam.\n\n"Indeed, Allah and His angels send blessings upon the Prophet. O you who believe, ask Allah to bless him and grant him peace." - Quran 33:56\n\nReciting Durood brings immense spiritual benefits and draws us closer to Allah and His Messenger ﷺ.',
-      [{ text: 'Alhamdulillah', style: 'default' }]
+      'About Durood',
+      [
+        'Durood (salawat) is sending peace and blessings upon the Beloved Prophet Muhammad ﷺ.',
+        '',
+        'Quran (33:56)',
+        '“Indeed, Allah and His angels send blessings upon the Prophet. O you who believe, send blessings upon him and salutations of peace.”',
+        '',
+        'Virtues',
+        '• A means of drawing closer to Allah and His Messenger ﷺ.',
+        '• Erases sins and elevates ranks.',
+        '• Brings tranquility to the heart and blessings to one’s life.',
+        '',
+        'How to Recite',
+        '• Recite any authentic Durood formula with sincerity and presence of heart.',
+        '• Example: “اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ ﷺ”.',
+        '',
+        'Make intention, recite consistently, and encourage others to join in this blessed remembrance.'
+      ].join('\n'),
+      [{ text: 'Close', style: 'default' }]
     );
   };
 
   const handleAboutMission = () => {
     Alert.alert(
-      '🎯 Our Global Mission',
-      'Our goal is to unite Muslims worldwide in reciting 15 Crore (150 Million) Durood Sharif in honor of Milad un Nabi ﷺ.\n\nThis collective effort represents our love and respect for Prophet Muhammad ﷺ and helps strengthen the global Muslim community through shared spiritual practice.\n\nJoin millions of Muslims in this blessed endeavor!',
-      [{ text: 'SubhanAllah', style: 'default' }]
+      'Our Global Mission',
+      [
+        'Sunni Dawat‑e‑Islami (SDI) invites the Ummah to commemorate the 1500th Birth Anniversary (Milad‑un‑Nabi ﷺ) by sending abundant salaat and salaam upon the Beloved Prophet ﷺ.',
+        '',
+        'Goal',
+        '• 15 crore (150 million) collective Durood recitations contributed by Muslims worldwide.',
+        '',
+        'How to Participate',
+        '1) Recite Durood with sincerity and presence of heart.',
+        '2) Tap the counter for each recitation, or use Bulk Add after a session.',
+        '3) Invite family and friends to join; every recitation counts.',
+        '',
+        'Etiquettes (Adab)',
+        '• Recite in a state of wudu when possible.',
+        '• Begin with Bismillah and end with salam.',
+        '• Prioritize quality and attentiveness over speed.',
+        '',
+        'Why This Matters',
+        '• Revives love for the Prophet ﷺ in our hearts.',
+        '• Unites the Ummah globally in a blessed act of worship.',
+        '• Encourages consistent remembrance and sends blessings upon the Beloved ﷺ.',
+        '',
+        'Note',
+        'This app records your recitations locally and contributes to the global total automatically when connectivity is available.'
+      ].join('\n'),
+      [{ text: 'Close', style: 'default' }]
     );
   };
 
   const handleAboutUs = () => {
     Alert.alert(
-      '🕌 About Durood Counter',
-      'Durood Counter is a spiritual companion app designed to help Muslims worldwide participate in collective worship.\n\nOur mission is to make it easy for believers to track their spiritual progress while contributing to a global community effort.\n\n"The believers, in their love, mercy, and compassion for one another, are like a single body." - Prophet Muhammad ﷺ\n\nVersion 1.0.0\n\nMay Allah accept our efforts and grant us His blessings.',
-      [{ text: 'Ameen', style: 'default' }]
+      'About Durood Counter',
+      [
+        'Durood Counter is a simple, focused tool to help the Ummah send abundant salawat upon the Prophet ﷺ while contributing to a global collective goal.',
+        '',
+        'What the app does',
+        '• One‑tap counting with offline support and automatic sync.',
+        '• Personal progress tracking and global total updates.',
+        '• Privacy‑friendly: no login, minimal local storage only.',
+        '',
+        'Our intent',
+        '• Make participation easy for everyone — young and old, online or offline.',
+        '• Keep the experience uncluttered and spiritually centered.',
+        '',
+        'Version 1.0.0'
+      ].join('\n'),
+      [{ text: 'Close', style: 'default' }]
     );
   };
 
@@ -161,14 +214,14 @@ export function Settings() {
 
   const handleShareApp = () => {
     const shareText = 'Join me in reciting Durood for Prophet Muhammad ﷺ! Let\'s reach our goal of 15 Crore Durood together. Download Durood Counter app and be part of this blessed mission. 🤲📿';
-    
+
     // You can implement proper sharing logic here using expo-sharing
     Alert.alert(
       '📤 Share App',
       shareText,
       [
-        { text: 'Copy Message', onPress: () => {/* Copy to clipboard logic */} },
-        { text: 'Share', onPress: () => {/* Open share dialog */} },
+        { text: 'Copy Message', onPress: () => {/* Copy to clipboard logic */ } },
+        { text: 'Share', onPress: () => {/* Open share dialog */ } },
         { text: 'Cancel', style: 'cancel' }
       ]
     );
@@ -177,8 +230,8 @@ export function Settings() {
   return (
     <View style={styles.container}>
       <IslamicPattern />
-      <StatusBar 
-        barStyle="light-content" 
+      <StatusBar
+        barStyle="light-content"
         backgroundColor={Colors.primary.darkTeal}
         translucent={false}
       />
@@ -187,7 +240,7 @@ export function Settings() {
         <View style={styles.header}>
           <View style={styles.headerContent}>
             <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-              <Text style={styles.backButtonText}>‹</Text>
+              <Ionicons name="chevron-back" size={24} color={Colors.neutral.white} />
             </TouchableOpacity>
             <View style={styles.headerTitleContainer}>
               <Text style={styles.headerTitle}>Settings</Text>
@@ -197,22 +250,22 @@ export function Settings() {
           </View>
         </View>
 
-        <ScrollView 
-          style={styles.scrollView} 
+        <ScrollView
+          style={styles.scrollView}
           contentContainerStyle={styles.scrollViewContent}
           showsVerticalScrollIndicator={false}
         >
           {/* App Section */}
           <SettingsSection title="App">
             <SettingsItem
-              icon="⭐"
+              icon="star-outline"
               title="Rate This App"
               subtitle="Share your experience with others"
               onPress={handleRateApp}
             />
             <View style={styles.divider} />
             <SettingsItem
-              icon="📤"
+              icon="share-social-outline"
               title="Share App"
               subtitle="Invite friends to join our mission"
               onPress={handleShareApp}
@@ -222,14 +275,14 @@ export function Settings() {
           {/* Support Section */}
           <SettingsSection title="Support">
             <SettingsItem
-              icon="👨‍💻"
+              icon="person-outline"
               title="Contact Developer"
               subtitle="Get in touch with our team"
               onPress={handleContactDeveloper}
             />
             <View style={styles.divider} />
             <SettingsItem
-              icon="🐛"
+              icon="bug-outline"
               title="Report a Bug"
               subtitle="Help us improve the app"
               onPress={handleReportBug}
@@ -239,21 +292,21 @@ export function Settings() {
           {/* Information Section */}
           <SettingsSection title="Information">
             <SettingsItem
-              icon="🤲"
+              icon="book-outline"
               title="About Durood"
               subtitle="Learn about the blessings of Durood"
               onPress={handleAboutDurood}
             />
             <View style={styles.divider} />
             <SettingsItem
-              icon="🎯"
+              icon="flag-outline"
               title="Our Global Mission"
               subtitle="15 Crore Durood for Milad un Nabi ﷺ"
               onPress={handleAboutMission}
             />
             <View style={styles.divider} />
             <SettingsItem
-              icon="🕌"
+              icon="information-circle-outline"
               title="About Us"
               subtitle="Learn about our app and mission"
               onPress={handleAboutUs}
@@ -263,7 +316,7 @@ export function Settings() {
           {/* Legal Section */}
           <SettingsSection title="Legal">
             <SettingsItem
-              icon="🔒"
+              icon="lock-closed-outline"
               title="Privacy Policy"
               subtitle="How we protect your data"
               onPress={handlePrivacyPolicy}
@@ -295,16 +348,16 @@ export function Settings() {
           <View style={styles.contactModalContainer}>
             <View style={styles.contactModalHeader}>
               <View style={styles.contactModalIcon}>
-                <Text style={styles.contactModalIconText}>👨‍💻</Text>
+                <Ionicons name="person-outline" size={28} color={Colors.neutral.white} />
               </View>
               <Text style={styles.contactModalTitle}>Contact Developer</Text>
-              
+
             </View>
 
             <View style={styles.contactModalContent}>
               <View style={styles.contactInfoItem}>
                 <View style={styles.contactInfoIcon}>
-                  <Text style={styles.contactInfoEmoji}>💻</Text>
+                  <Ionicons name="code-outline" size={20} color={Colors.secondary.warmGold} />
                 </View>
                 <View style={styles.contactInfoText}>
                   <Text style={styles.contactInfoLabel}>Developer</Text>
@@ -314,7 +367,7 @@ export function Settings() {
 
               <View style={styles.contactInfoItem}>
                 <View style={styles.contactInfoIcon}>
-                  <Text style={styles.contactInfoEmoji}>📱</Text>
+                  <Ionicons name="call-outline" size={20} color={Colors.secondary.warmGold} />
                 </View>
                 <View style={styles.contactInfoText}>
                   <Text style={styles.contactInfoLabel}>Phone</Text>
@@ -324,7 +377,7 @@ export function Settings() {
 
               <View style={styles.contactInfoItem}>
                 <View style={styles.contactInfoIcon}>
-                  <Text style={styles.contactInfoEmoji}>📧</Text>
+                  <Ionicons name="mail-outline" size={20} color={Colors.secondary.warmGold} />
                 </View>
                 <View style={styles.contactInfoText}>
                   <Text style={styles.contactInfoLabel}>Email</Text>
@@ -340,7 +393,7 @@ export function Settings() {
                 activeOpacity={0.8}
               >
                 <View style={styles.contactActionIcon}>
-                  <Text style={styles.contactActionEmoji}>📱</Text>
+                  <Ionicons name="call-outline" size={20} color={Colors.neutral.white} />
                 </View>
                 <Text style={styles.contactActionText}>Call</Text>
               </TouchableOpacity>
@@ -351,7 +404,7 @@ export function Settings() {
                 activeOpacity={0.8}
               >
                 <View style={styles.contactActionIcon}>
-                  <Text style={styles.contactActionEmoji}>📧</Text>
+                  <Ionicons name="mail-outline" size={20} color={Colors.neutral.white} />
                 </View>
                 <Text style={styles.contactActionText}>Email</Text>
               </TouchableOpacity>
@@ -362,7 +415,7 @@ export function Settings() {
                 activeOpacity={0.8}
               >
                 <View style={styles.contactActionIcon}>
-                  <Text style={styles.contactActionEmoji}>×</Text>
+                  <Ionicons name="close-outline" size={20} color={Colors.neutral.white} />
                 </View>
                 <Text style={styles.contactActionText}>Close</Text>
               </TouchableOpacity>
@@ -506,13 +559,12 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: Colors.neutral.lightGray,
+    backgroundColor: Colors.primary.darkTeal,
+    borderWidth: 1,
+    borderColor: Colors.secondary.warmGold,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
-  },
-  settingsItemEmoji: {
-    fontSize: 20,
   },
   settingsItemText: {
     flex: 1,

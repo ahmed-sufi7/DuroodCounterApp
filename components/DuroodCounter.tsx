@@ -32,7 +32,6 @@ export function DuroodCounter() {
     personalCount,
     globalCount,
     isLoading,
-    isIncrementing,
     error,
     incrementCount,
     addBulkCount,
@@ -46,12 +45,13 @@ export function DuroodCounter() {
   const [bulkCountInput, setBulkCountInput] = useState('');
   const [isBulkProcessing, setIsBulkProcessing] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [showCharityModal, setShowCharityModal] = useState(false);
 
   // Get screen dimensions for responsive positioning
   const screenWidth = Dimensions.get('window').width;
   const missionCardPadding = 32; // 16px margin on each side
   const cardWidth = screenWidth - missionCardPadding;
-  
+
   // Calculate center position for background logo
   const logoSize = Math.min(cardWidth * 0.8, 320); // Increased from 60% to 80% of card width, max 320px
   const logoLeft = (cardWidth - logoSize) / 2;
@@ -100,7 +100,7 @@ export function DuroodCounter() {
 
   const handleBulkSubmit = async () => {
     const count = parseInt(bulkCountInput.trim(), 10);
-    
+
     if (isNaN(count) || count <= 0) {
       Alert.alert('Invalid Input', 'Please enter a valid number greater than 0');
       return;
@@ -112,8 +112,8 @@ export function DuroodCounter() {
         `Are you sure you want to add ${formatNumber(count)} Durood? This is a very large number.`,
         [
           { text: 'Cancel', style: 'cancel' },
-          { 
-            text: 'Confirm', 
+          {
+            text: 'Confirm',
             onPress: async () => {
               setIsBulkProcessing(true);
               try {
@@ -150,10 +150,10 @@ export function DuroodCounter() {
 
   if (isLoading) {
     return (
-        <View style={styles.container}>
+      <View style={styles.container}>
         <IslamicPattern />
-        <StatusBar 
-          barStyle="light-content" 
+        <StatusBar
+          barStyle="light-content"
           backgroundColor={Colors.primary.darkTeal}
           translucent={false}
           {...(Platform.OS === 'android' && {
@@ -177,8 +177,8 @@ export function DuroodCounter() {
   return (
     <View style={styles.container}>
       <IslamicPattern />
-      <StatusBar 
-        barStyle="light-content" 
+      <StatusBar
+        barStyle="light-content"
         backgroundColor={Colors.primary.darkTeal}
         translucent={false}
         {...(Platform.OS === 'android' && {
@@ -190,28 +190,28 @@ export function DuroodCounter() {
         {/* App Header */}
         <View style={styles.appHeader}>
           <View style={styles.headerLeft}>
-            <Image 
+            <Image
               source={require('../assets/images/celebration-logo.png')}
               style={styles.celebrationLogo}
               resizeMode="contain"
             />
             <View style={styles.headerTextContainer}>
-              
+
               <Text style={styles.appTitle}>Durood Counter</Text>
               <Text style={styles.greeting}>An Initiative by SDI</Text>
             </View>
           </View>
           <TouchableOpacity style={styles.headerButton} onPress={handleSettingsPress}>
-            <Ionicons 
-              name="settings-outline" 
-              size={24} 
-              color={Colors.neutral.white} 
+            <Ionicons
+              name="settings-outline"
+              size={24}
+              color={Colors.neutral.white}
             />
           </TouchableOpacity>
         </View>
 
-        <ScrollView 
-          style={styles.scrollView} 
+        <ScrollView
+          style={styles.scrollView}
           contentContainerStyle={styles.scrollViewContent}
           showsVerticalScrollIndicator={false}
         >
@@ -223,7 +223,7 @@ export function DuroodCounter() {
               <View style={styles.sectionHeaderLine} />
             </View>
             <View style={styles.missionCard}>
-              <Image 
+              <Image
                 source={require('../assets/images/sdi logo arabic.png')}
                 style={[
                   styles.missionBackgroundLogo,
@@ -244,7 +244,7 @@ export function DuroodCounter() {
                   An Initiative by SDI for the celebration of 1500th Milad un Nabi ﷺ
                 </Text>
               </View>
-              
+
               <View style={styles.missionProgress}>
                 <View style={styles.progressStats}>
                   <View style={styles.progressItem}>
@@ -257,7 +257,7 @@ export function DuroodCounter() {
                     <Text style={styles.progressLabel}>Remaining</Text>
                   </View>
                 </View>
-                
+
                 <View style={styles.progressBarContainer}>
                   <View style={styles.progressBar}>
                     <View style={[styles.progressBarFill, { width: `${progress}%` }]} />
@@ -268,10 +268,10 @@ export function DuroodCounter() {
 
               <View style={styles.timerSection}>
                 <View style={styles.timerIcon}>
-                  <Ionicons 
-                    name="time-outline" 
-                    size={24} 
-                    color={Colors.primary.darkTeal} 
+                  <Ionicons
+                    name="time-outline"
+                    size={24}
+                    color={Colors.primary.darkTeal}
                   />
                 </View>
                 <View style={styles.timerContent}>
@@ -326,7 +326,7 @@ export function DuroodCounter() {
                   adjustsFontSizeToFit
                   minimumFontScale={0.75}
                 >
-                   اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ ﷺ
+                  اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ ﷺ
                 </Text>
               </View>
 
@@ -335,19 +335,14 @@ export function DuroodCounter() {
                 <Text style={styles.counterLabel}>TAP TO COUNT</Text>
                 <Animated.View style={[styles.counterButtonContainer, { transform: [{ scale: buttonScale }] }]}>
                   <TouchableOpacity
-                    style={[styles.counterButton, isIncrementing && styles.counterButtonDisabled]}
+                    style={styles.counterButton}
                     onPress={handleIncrement}
-                    disabled={isIncrementing}
                     activeOpacity={0.7}
                   >
-                    {isIncrementing ? (
-                      <ActivityIndicator size="large" color={Colors.neutral.white} />
-                    ) : (
-                      <Text style={styles.counterButtonText}>+1</Text>
-                    )}
+                    <Text style={styles.counterButtonText}>+1</Text>
                   </TouchableOpacity>
                 </Animated.View>
-                
+
                 <Text style={styles.verseText} accessibilityRole="text">
                   إِنَّ ٱللَّهَ وَمَلَـٰٓئِكَتَهُۥ يُصَلُّونَ عَلَى ٱلنَّبِىِّ ۚ يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوا۟ صَلُّوا۟ عَلَيْهِ وَسَلِّمُوا۟ تَسْلِيمًا
                 </Text>
@@ -390,7 +385,7 @@ export function DuroodCounter() {
 
                 <TouchableOpacity
                   style={styles.actionButton}
-                  onPress={() => Alert.alert('Charity', 'Charity feature coming soon!')}
+                  onPress={() => setShowCharityModal(true)}
                   activeOpacity={0.8}
                 >
                   <View style={styles.actionButtonIcon}>
@@ -399,7 +394,7 @@ export function DuroodCounter() {
                   <Text style={styles.actionButtonText}>Charity</Text>
                 </TouchableOpacity>
               </View>
-             </ImageBackground>
+            </ImageBackground>
           </View>
 
           {/* Error Display */}
@@ -498,6 +493,54 @@ export function DuroodCounter() {
           visible={showHistoryModal}
           onClose={() => setShowHistoryModal(false)}
         />
+
+        {/* Charity Modal */}
+        <Modal
+          visible={showCharityModal}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setShowCharityModal(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.charityModalContainer}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>🤲 Charity Details</Text>
+                <Text style={styles.modalSubtitle}>Support Madrasa Ummul Khair Lilbanaat</Text>
+              </View>
+
+              <ScrollView contentContainerStyle={styles.charityContent}>
+                <Text style={styles.charityLine}>
+                  Madrasa Ummul Khair Lilbanaat @ 1st Floor, SDI YOUTH CENTER, Markaz Sunni Dawate Islami branch Gulbarga
+                </Text>
+                <Text style={styles.charityLine}>
+                  A/C Name: Sunni Dawat-E-Islami Education & Charitable Trust Gulbarga
+                </Text>
+                <Text style={styles.charityLine}>Bank: State Bank Of India</Text>
+                <Text style={styles.charityLine}>Account No.: 62179881380</Text>
+                <Text style={styles.charityLine}>IFSC: SBIN0020632 (Dargah Branch, Gulbarga)</Text>
+
+                <View style={styles.qrContainer}>
+                  <Image
+                    source={require('../assets/images/QR Code.jpg')}
+                    style={styles.qrImage}
+                    resizeMode="contain"
+                  />
+                  <Text style={styles.qrCaption}>Scan to Donate</Text>
+                </View>
+              </ScrollView>
+
+              <View style={styles.modalActions}>
+                <TouchableOpacity
+                  style={styles.modalCancelButton}
+                  onPress={() => setShowCharityModal(false)}
+                  activeOpacity={0.8}
+                >
+                  <Text style={styles.modalCancelText}>Close</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </SafeAreaView>
     </View>
   );
@@ -683,7 +726,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     marginTop: 8,
     opacity: 0.9,
-    
+
   },
   missionProgress: {
     marginBottom: 20,
@@ -748,7 +791,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     zIndex: 1,
     marginTop: 16,
-    
+
   },
   timerIcon: {
     width: 48,
@@ -1029,6 +1072,21 @@ const styles = StyleSheet.create({
       elevation: 15,
     }),
   },
+  charityModalContainer: {
+    backgroundColor: Colors.neutral.white,
+    borderRadius: 24,
+    width: '100%',
+    maxWidth: 480,
+    ...(Platform.OS === 'web' ? {
+      boxShadow: '0 10px 20px rgba(0, 0, 0, 0.3)',
+    } : {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 10 },
+      shadowOpacity: 0.3,
+      shadowRadius: 20,
+      elevation: 15,
+    }),
+  },
   modalHeader: {
     alignItems: 'center',
     padding: 24,
@@ -1048,6 +1106,30 @@ const styles = StyleSheet.create({
     color: Colors.neutral.darkGray,
     textAlign: 'center',
     lineHeight: 20,
+  },
+  charityContent: {
+    padding: 20,
+    gap: 8,
+  },
+  charityLine: {
+    fontSize: 14,
+    color: Colors.primary.darkTeal,
+  },
+  qrContainer: {
+    alignItems: 'center',
+    marginTop: 12,
+  },
+  qrImage: {
+    width: 240,
+    height: 240,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: Colors.neutral.lightGray,
+  },
+  qrCaption: {
+    marginTop: 8,
+    fontSize: 12,
+    color: Colors.neutral.darkGray,
   },
   modalContent: {
     padding: 24,

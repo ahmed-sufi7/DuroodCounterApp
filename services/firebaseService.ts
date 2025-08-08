@@ -1,4 +1,4 @@
-import { get, onValue, ref, serverTimestamp, set } from 'firebase/database';
+import { get, onValue, ref, runTransaction, serverTimestamp, set } from 'firebase/database';
 import { database } from '../config/firebase';
 
 export interface DuroodData {
@@ -74,16 +74,18 @@ class FirebaseService {
     return unsubscribe;
   }
 
-  // Add user count increment
+  // Add user count increment (atomic, handles concurrency)
   async incrementGlobalCount(increment: number = 1): Promise<void> {
     try {
-      console.log(`🔄 Incrementing global count by ${increment}...`);
-      const currentCount = await this.getGlobalCount();
-      const newCount = currentCount + increment;
-      await this.updateGlobalCount(newCount);
-      console.log(`✅ Global count incremented from ${currentCount} to ${newCount}`);
+      console.log(`🔄 Incrementing global count by ${increment} (transaction)...`);
+      await runTransaction(this.globalCountRef, (current) => {
+        const currentVal = typeof current === 'number' && !isNaN(current) ? current : 0;
+        return currentVal + increment;
+      }, { applyLocally: false });
+      await set(this.lastUpdatedRef, serverTimestamp());
+      console.log(`✅ Global count incremented by ${increment}`);
     } catch (error) {
-      console.error('❌ Error incrementing global count:', error);
+      console.error('❌ Error incrementing global count (transaction):', error);
       throw error; // Re-throw to let caller handle
     }
   }

@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const STORAGE_KEYS = {
   PERSONAL_COUNT: 'personalCount',
   LAST_SYNCED: 'lastSynced',
+  PENDING_INCREMENTS: 'pendingIncrements',
 };
 
 class StorageService {
@@ -46,6 +47,26 @@ class StorageService {
     } catch (error) {
       console.error('Error saving last synced:', error);
       throw error;
+    }
+  }
+
+  // Get queued pending increments for offline sync
+  async getPendingIncrements(): Promise<number> {
+    try {
+      const value = await AsyncStorage.getItem(STORAGE_KEYS.PENDING_INCREMENTS);
+      return value ? parseInt(value, 10) : 0;
+    } catch (error) {
+      console.error('Error getting pending increments:', error);
+      return 0;
+    }
+  }
+
+  // Save queued pending increments for offline sync
+  async savePendingIncrements(count: number): Promise<void> {
+    try {
+      await AsyncStorage.setItem(STORAGE_KEYS.PENDING_INCREMENTS, String(count));
+    } catch (error) {
+      console.error('Error saving pending increments:', error);
     }
   }
 
