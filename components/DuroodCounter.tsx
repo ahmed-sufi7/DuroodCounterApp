@@ -960,7 +960,7 @@ const styles = StyleSheet.create({
   },
   personalStatBackgroundImage: {
     opacity: 0.3,
-    transform: [{ scale: 1.25 }],
+    transform: [{ scale: 1.0 }],
     borderRadius: 16,
   },
   personalStatTitle: {
