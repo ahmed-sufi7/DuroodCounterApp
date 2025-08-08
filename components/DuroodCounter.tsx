@@ -289,7 +289,7 @@ export function DuroodCounter() {
                     width: logoSize,
                     height: logoSize,
                     left: logoLeft,
-                    top: '28%',
+                    top: '27.5%',
                     marginTop: -logoSize / 2,
                   }
                 ]}
@@ -365,7 +365,7 @@ export function DuroodCounter() {
               <View style={styles.sectionHeaderLine} />
             </View>
             <ImageBackground
-              source={require('../assets/images/islamic-background.png')}
+              source={require('../assets/images/islamic-background90.jpg')}
               style={styles.personalStatCard}
               imageStyle={styles.personalStatBackgroundImage}
               resizeMode={'cover'}
@@ -905,9 +905,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   celebrationLogo: {
-    width: 60,
-    height: 60,
-    marginRight: 8,
+    width: 50,
+    height: 50,
+    marginRight: 12,
   },
   headerTextContainer: {
     flex: 1,
@@ -1336,7 +1336,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 8,
   },
   personalStatBackgroundImage: {
-    opacity: 0.3,
+    opacity: 0.28,
     transform: [{ scale: 1.0 }],
     borderRadius: 16,
   },
@@ -1480,13 +1480,16 @@ const styles = StyleSheet.create({
   // Action Buttons
   actionButtons: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     width: '100%',
-    paddingHorizontal: 4, // Reduced from 20 to compensate for reduced section padding
+    paddingHorizontal: 12,
+    gap: 8,
   },
   actionButton: {
+    flex: 1,
     alignItems: 'center',
-    minWidth: 80,
+    minWidth: 0,
   },
   actionButtonIcon: {
     width: 56,
