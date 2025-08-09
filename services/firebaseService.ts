@@ -131,22 +131,6 @@ class FirebaseService {
     return unsubscribe;
   }
 
-  async savePushToken(args: { token: string; provider: 'expo' | 'fcm'; platform: string }): Promise<void> {
-    try {
-      const safe = args.token.replace(/[:/\\.#$\[\]]/g, '_');
-      const key = `${args.platform}/${args.provider}/${safe}`;
-      const tokenRef = ref(database, `pushTokens/${key}`);
-      await set(tokenRef, {
-        token: args.token,
-        provider: args.provider,
-        platform: args.platform,
-        createdAt: serverTimestamp(),
-      });
-    } catch (e) {
-      console.warn('Failed to save push token:', e);
-    }
-  }
-
   // Initialize database with default values if needed
   async initializeDatabase(): Promise<void> {
     try {

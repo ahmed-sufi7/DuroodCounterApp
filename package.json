@@ -50,13 +50,14 @@
     "react-native": "0.79.5",
     "react-native-animatable": "^1.4.0",
     "react-native-bouncy-checkbox": "^4.1.2",
-    
-    
-    
-    
-    
+    "react-native-circular-progress": "^1.4.1",
+    "react-native-confetti-cannon": "^1.5.2",
+    "react-native-device-info": "^14.0.4",
+    "react-native-elements": "^3.4.3",
+    "react-native-fast-image": "^8.6.3",
+    "react-native-floating-action": "^1.22.0",
     "react-native-gesture-handler": "~2.24.0",
-    
+    "react-native-heroicons": "^4.0.0",
     "react-native-modal": "^14.0.0-rc.1",
     "react-native-pager-view": "^6.7.1",
     "react-native-paper": "^5.14.5",
@@ -67,8 +68,8 @@
     "react-native-shimmer-placeholder": "^2.0.9",
     "react-native-size-matters": "^0.4.2",
     "react-native-skia": "^0.0.1",
-    
-    
+    "react-native-super-ellipse-mask": "^1.0.7",
+    "react-native-super-grid": "^6.0.1",
     "react-native-svg": "^15.11.2",
     "react-native-svg-transformer": "^1.5.1",
     "react-native-typography": "^1.4.1",

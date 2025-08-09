@@ -303,7 +303,7 @@ export function DuroodCounter() {
                 <View style={styles.missionGoalAccent} />
                 <View style={styles.missionInitiativePill}>
                   <Text style={styles.missionInitiativeText}>
-                    An Initiative by SDI for the celebration of 1500th Milad un Nabi ﷺ
+                    An Initiative by Sunni Dawate Islami for the celebration of 1500th Milad un Nabi ﷺ
                   </Text>
                 </View>
               </View>
@@ -740,7 +740,7 @@ const GlobalLineChart = React.memo(function GlobalLineChart({ buckets, maxValue 
         {yTicks.map((t, i) => {
           const y = padding + (1 - Math.min(1, t / max)) * innerH;
           return (
-            <React.Fragment key={`tick-${i}`}>
+            <React.Fragment key={`yt-${i}`}>
               <Line x1={plotLeft} y1={y} x2={plotLeft + innerW} y2={y} stroke={Colors.primary.darkTeal} strokeOpacity={0.06} strokeWidth={1} />
               <SvgText x={paddingLeft + 2} y={y + 4} fill={Colors.neutral.darkGray} fontSize={10}>
                 {formatNumber(t)}
@@ -770,7 +770,11 @@ const GlobalLineChart = React.memo(function GlobalLineChart({ buckets, maxValue 
           width={innerW}
           height={innerH}
           fill="transparent"
-          {...({ onMouseMove: onMove, onMouseLeave: onLeave, onTouchStart: onMove, onTouchMove: onMove, onTouchEnd: onLeave } as any)}
+          {...({ onMouseMove: onMove, onMouseLeave: onLeave } as any)}
+          onStartShouldSetResponder={() => true}
+          onResponderGrant={onMove}
+          onResponderMove={onMove}
+          onResponderRelease={onLeave}
         />
         {hoverIdx !== null && points[hoverIdx] && (
           <>

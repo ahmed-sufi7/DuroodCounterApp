@@ -18,9 +18,9 @@ export default function TabLayout() {
         options={{
           title: 'Counter',
           tabBarIcon: ({ color, focused }) => (
-            <IconSymbol 
-              size={focused ? 32 : 28} 
-              name="heart.fill" 
+            <IconSymbol
+              size={focused ? 32 : 28}
+              name="heart.fill"
               color={focused ? Colors.secondary.warmGold : color}
             />
           ),
@@ -31,9 +31,9 @@ export default function TabLayout() {
         options={{
           title: 'Settings',
           tabBarIcon: ({ color, focused }) => (
-            <IconSymbol 
-              size={focused ? 32 : 28} 
-              name="gearshape.fill" 
+            <IconSymbol
+              size={focused ? 32 : 28}
+              name="gearshape.fill"
               color={focused ? Colors.secondary.warmGold : color}
             />
           ),
