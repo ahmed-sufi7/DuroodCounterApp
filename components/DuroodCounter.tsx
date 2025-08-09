@@ -431,7 +431,10 @@ export function DuroodCounter() {
 
               {/* Counter Display */}
               <View style={styles.counterDisplay}>
-                <Text style={styles.counterLabel}>TAP TO COUNT</Text>
+                <View style={styles.reciteCountCard} accessibilityRole="summary">
+                  <Text style={styles.reciteCountLabel}>Your Total Count</Text>
+                  <Text style={styles.reciteCountValue}>{formatNumber(personalCount)}</Text>
+                </View>
                 <Animated.View style={[styles.counterButtonContainer, { transform: [{ scale: buttonScale }] }]}>
                   <TouchableOpacity
                     style={styles.counterButton}
@@ -441,6 +444,7 @@ export function DuroodCounter() {
                     <Text style={styles.counterButtonText}>+1</Text>
                   </TouchableOpacity>
                 </Animated.View>
+                <Text style={styles.counterLabel}>TAP TO COUNT</Text>
 
                 <Text style={styles.verseText} accessibilityRole="text">
                   إِنَّ ٱللَّهَ وَمَلَـٰٓئِكَتَهُۥ يُصَلُّونَ عَلَى ٱلنَّبِىِّ ۚ يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوا۟ صَلُّوا۟ عَلَيْهِ وَسَلِّمُوا۟ تَسْلِيمًا
@@ -1382,7 +1386,7 @@ const styles = StyleSheet.create({
   mainSection: {
     flex: 1,
     paddingHorizontal: 16, // Changed from 20 to match other sections
-    paddingVertical: 32,
+    paddingVertical: 24,
     alignItems: 'center',
     backgroundColor: Colors.neutral.white,
     marginHorizontal: 0, // Removed margin since counterSection now handles padding
@@ -1404,7 +1408,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.neutral.white,
     borderRadius: 16,
     padding: 20,
-    marginBottom: 32,
+    marginBottom: 20,
     ...(Platform.OS === 'web' ? {
       boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
     } : {
@@ -1425,17 +1429,17 @@ const styles = StyleSheet.create({
   // Counter Display
   counterDisplay: {
     alignItems: 'center',
-    marginBottom: 40,
+    marginBottom: 24,
   },
   counterLabel: {
     fontSize: 12,
     fontWeight: 'bold',
     color: Colors.neutral.darkGray,
-    marginBottom: 16,
+    marginBottom: 10,
     letterSpacing: 1.2,
   },
   counterButtonContainer: {
-    marginBottom: 12,
+    marginBottom: 10,
   },
   counterButton: {
     backgroundColor: Colors.secondary.warmGold,
@@ -1473,7 +1477,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.primary.darkTeal,
     textAlign: 'center',
-    marginTop: 12,
+    marginTop: 8,
     lineHeight: 26,
     fontWeight: '700',
   },
@@ -1743,4 +1747,29 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.primary.darkTeal,
   },
+  reciteCountCard: {
+    backgroundColor: 'transparent',
+    borderRadius: 0,
+    padding: 0,
+    marginBottom: 10,
+    alignItems: 'center',
+    ...(Platform.OS === 'web' ? {
+      boxShadow: 'none',
+    } : {
+      shadowOpacity: 0,
+      elevation: 0,
+    }),
+  },
+  reciteCountLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: Colors.neutral.darkGray,
+    marginBottom: 2,
+    letterSpacing: 1.1,
+  },
+  reciteCountValue: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: Colors.primary.darkTeal,
+  }
 }); 
