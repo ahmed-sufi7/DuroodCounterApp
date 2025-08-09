@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "DuroodCounterApp",
+    "name": "Durood Counter",
     "slug": "DuroodCounterApp",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -38,7 +38,7 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "imageWidth": 180,
           "resizeMode": "contain",
           "backgroundColor": "#2D4A4A"
         }
