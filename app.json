@@ -7,7 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "duroodcounterapp",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "ios": {
       "supportsTablet": true
     },
@@ -16,15 +16,16 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "navigationBar": {
-        "backgroundColor": "#2D4A4A",
-        "visible": "immersive"
-      },
-      "statusBar": {
-        "backgroundColor": "#2D4A4A",
-        "barStyle": "light-content"
-      },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.pixelwebstudio.DuroodCounterApp"
+    },
+    "androidStatusBar": {
+      "backgroundColor": "#2D4A4A",
+      "barStyle": "light-content"
+    },
+    "androidNavigationBar": {
+      "backgroundColor": "#2D4A4A",
+      "visible": "immersive"
     },
     "web": {
       "bundler": "metro",
@@ -39,12 +40,18 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#2D4A4A"
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "287a88ae-8ea4-469b-b507-94d24279479c"
+      }
     }
   }
 }

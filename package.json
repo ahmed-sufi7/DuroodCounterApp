@@ -15,10 +15,7 @@
     "@expo/vector-icons": "^14.1.0",
     "@gorhom/bottom-sheet": "^5.1.8",
     "@react-native-async-storage/async-storage": "^2.1.2",
-    "@react-native-community/art": "^1.1.2",
     "@react-native-community/blur": "^4.4.1",
-    "@react-native-community/datetimepicker": "^8.4.1",
-    "@react-native-community/slider": "^4.5.6",
     "@react-native-masked-view/masked-view": "^0.3.2",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
@@ -43,41 +40,19 @@
     "expo-web-browser": "~14.2.0",
     "firebase": "^11.10.0",
     "hijri-date": "^0.2.2",
-    "lottie-react-native": "^7.2.2",
     "moment-hijri": "^3.0.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.5",
-    "react-native-animatable": "^1.4.0",
-    "react-native-bouncy-checkbox": "^4.1.2",
-    "react-native-circular-progress": "^1.4.1",
-    "react-native-confetti-cannon": "^1.5.2",
-    "react-native-device-info": "^14.0.4",
-    "react-native-elements": "^3.4.3",
-    "react-native-fast-image": "^8.6.3",
-    "react-native-floating-action": "^1.22.0",
     "react-native-gesture-handler": "~2.24.0",
-    "react-native-heroicons": "^4.0.0",
-    "react-native-modal": "^14.0.0-rc.1",
-    "react-native-pager-view": "^6.7.1",
-    "react-native-paper": "^5.14.5",
-    "react-native-progress": "^5.0.1",
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
-    "react-native-shimmer-placeholder": "^2.0.9",
-    "react-native-size-matters": "^0.4.2",
-    "react-native-skia": "^0.0.1",
-    "react-native-super-ellipse-mask": "^1.0.7",
-    "react-native-super-grid": "^6.0.1",
     "react-native-svg": "^15.11.2",
     "react-native-svg-transformer": "^1.5.1",
-    "react-native-typography": "^1.4.1",
-    "react-native-ui-lib": "^7.46.0",
-    "react-native-vector-icons": "^10.3.0",
     "react-native-web": "~0.20.0",
-    "react-native-webview": "13.13.5",
-    "reactbits-mcp-server": "^1.2.7"
+    "reactbits-mcp-server": "^1.2.7",
+    "expo-dev-client": "~5.2.4"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -87,5 +62,19 @@
     "eslint-config-expo": "~9.2.0",
     "typescript": "~5.8.3"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "@react-native-community/art",
+          "react-native-bouncy-checkbox",
+          "react-native-confetti-cannon",
+          "react-native-heroicons",
+          "react-native-super-ellipse-mask"
+        ],
+        "listUnknownPackages": false
+      }
+    }
+  }
 }
