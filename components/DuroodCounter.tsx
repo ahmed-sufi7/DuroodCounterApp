@@ -740,12 +740,12 @@ const GlobalLineChart = React.memo(function GlobalLineChart({ buckets, maxValue 
         {yTicks.map((t, i) => {
           const y = padding + (1 - Math.min(1, t / max)) * innerH;
           return (
-            <>
-              <Line key={`gl-${i}`} x1={plotLeft} y1={y} x2={plotLeft + innerW} y2={y} stroke={Colors.primary.darkTeal} strokeOpacity={0.06} strokeWidth={1} />
-              <SvgText key={`gt-${i}`} x={paddingLeft + 2} y={y + 4} fill={Colors.neutral.darkGray} fontSize={10}>
+            <React.Fragment key={`tick-${i}`}>
+              <Line x1={plotLeft} y1={y} x2={plotLeft + innerW} y2={y} stroke={Colors.primary.darkTeal} strokeOpacity={0.06} strokeWidth={1} />
+              <SvgText x={paddingLeft + 2} y={y + 4} fill={Colors.neutral.darkGray} fontSize={10}>
                 {formatNumber(t)}
               </SvgText>
-            </>
+            </React.Fragment>
           );
         })}
         {points.length > 1 && (
@@ -758,10 +758,10 @@ const GlobalLineChart = React.memo(function GlobalLineChart({ buckets, maxValue 
         <Path d={pathD} stroke={Colors.primary.darkTeal} strokeOpacity={0.08} strokeWidth={6} fill="none" />
         <Path d={pathD} stroke="url(#strokeGrad)" strokeWidth={2.5} fill="none" />
         {points.map((p) => (
-          <>
-            <Circle key={`h-${p.key}`} cx={p.x} cy={p.y} r={6} fill={Colors.neutral.white} fillOpacity={0.8} />
-            <Circle key={`d-${p.key}`} cx={p.x} cy={p.y} r={3} fill={Colors.secondary.warmGold} />
-          </>
+          <React.Fragment key={`pt-${p.key}`}>
+            <Circle cx={p.x} cy={p.y} r={6} fill={Colors.neutral.white} fillOpacity={0.8} />
+            <Circle cx={p.x} cy={p.y} r={3} fill={Colors.secondary.warmGold} />
+          </React.Fragment>
         ))}
         {/* Interaction overlay for mouse/touch */}
         <Rect
@@ -770,11 +770,7 @@ const GlobalLineChart = React.memo(function GlobalLineChart({ buckets, maxValue 
           width={innerW}
           height={innerH}
           fill="transparent"
-          {...({ onMouseMove: onMove, onMouseLeave: onLeave } as any)}
-          onStartShouldSetResponder={() => true}
-          onResponderGrant={onMove}
-          onResponderMove={onMove}
-          onResponderRelease={onLeave}
+          {...({ onMouseMove: onMove, onMouseLeave: onLeave, onTouchStart: onMove, onTouchMove: onMove, onTouchEnd: onLeave } as any)}
         />
         {hoverIdx !== null && points[hoverIdx] && (
           <>

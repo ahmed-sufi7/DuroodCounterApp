@@ -15,6 +15,17 @@
         ".validate": "newData.isNumber() && newData.val() >= 0"
       }
     },
+    "pushTokens": {
+      ".read": false,
+      "$platform": {
+        "$provider": {
+          "$token": {
+            ".write": "newData.child('token').isString() && newData.child('token').val().length > 0",
+            ".validate": "newData.hasChildren(['token','provider','platform'])"
+          }
+        }
+      }
+    },
     ".read": false,
     ".write": false
   }

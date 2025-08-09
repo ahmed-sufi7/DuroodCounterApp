@@ -2,10 +2,12 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { registerForPushNotifications } from '@/services/notifications';
 
 // Create custom themes based on our Islamic design system
 const CustomLightTheme = {
@@ -44,13 +46,17 @@ export default function RootLayout() {
     return null;
   }
 
+  useEffect(() => {
+    registerForPushNotifications().catch(() => { });
+  }, []);
+
   return (
     <ThemeProvider value={colorScheme === 'dark' ? CustomDarkTheme : CustomLightTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
-      <StatusBar 
+      <StatusBar
         style="light"
         backgroundColor={Colors.primary.darkTeal}
       />
