@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import * as SystemUI from 'expo-system-ui';
 import React, { useEffect, useState } from 'react';
@@ -11,6 +12,7 @@ import {
   ImageBackground,
   Platform,
   ScrollView,
+  Share,
   StatusBar,
   StyleSheet,
   Text,
@@ -198,6 +200,17 @@ export function DuroodCounter() {
       } finally {
         setIsBulkProcessing(false);
       }
+    }
+  };
+
+  const handleShareApp = async () => {
+    try {
+      const androidPackage = (Constants as any)?.expoConfig?.android?.package || 'com.pixelwebstudio.DuroodCounterApp';
+      const playStoreUrl = `https://play.google.com/store/apps/details?id=${androidPackage}`;
+      const message = `Download Durood Counter on Google Play:\n${playStoreUrl}`;
+      await Share.share({ title: 'Durood Counter', message, url: playStoreUrl });
+    } catch {
+      Alert.alert('Share', 'Unable to open share sheet.');
     }
   };
 
@@ -477,7 +490,7 @@ export function DuroodCounter() {
 
                 <TouchableOpacity
                   style={styles.actionButton}
-                  onPress={() => Alert.alert('Share', 'Share feature coming soon!')}
+                  onPress={handleShareApp}
                   activeOpacity={0.8}
                 >
                   <View style={styles.actionButtonIcon}>
