@@ -75,7 +75,7 @@ Firebase may process data on servers located in various regions. The application
 
 If you have questions, requests, or concerns about privacy:
 
-Email: REPLACE_WITH_YOUR_SUPPORT_EMAIL
+Email: pixelwebstudio7@gmail.com
 
 ## Changes to This Policy
 
